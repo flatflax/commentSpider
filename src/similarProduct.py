@@ -1,32 +1,37 @@
 import unittest
 from selenium import webdriver
 import time
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 
-class similarProductSearch(unittest.TestCase):
+dataPath = os.path.abspath('..')    # 工程根目录
+url = "https://3c.tmall.com/"
+productName = dataPath + r'\data\productName.txt'
+productInfo = dataPath + r'\data\productInfo.txt'
+
+
+class Similarproductsearch(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome()
 
     def test_search_in_python_org(self):
 
-        with open('productName.txt', encoding="utf-8") as reader:   # 获取需要搜索的商品名
+        with open(productName, encoding="utf-8") as reader:   # 获取需要搜索的商品名
             goodnames = []
             for index, line in enumerate(reader):
                 goodnames.append(line.replace("\n",""))
             reader.close()
 
         driver = self.driver
-        url = "https://3c.tmall.com/"
         driver.get(url)
 
         for name in goodnames:
             print(name)
             try:
-                similarProductSearch.switchHandle(self, driver)
+                Similarproductsearch.switchHandle(self, driver)
                 element = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.XPATH, '//*[@id="mallSearch"]/form/fieldset/div/button'))
                             )   # 搜索框旁边的确认键
@@ -34,7 +39,7 @@ class similarProductSearch(unittest.TestCase):
                 time.sleep(10)
                 element.send_keys(Keys.ENTER)
                 for i in range(50):
-                    similarProductSearch.switchHandle(self, driver)
+                    Similarproductsearch.switchHandle(self, driver)
                     try:
                         xpath1 = "//p[@class='productTitle']/a"  # 商品名称（链接）
                         flag = WebDriverWait(driver, 10).until(
@@ -43,11 +48,11 @@ class similarProductSearch(unittest.TestCase):
                         links = (e for e in
                                  driver.find_elements_by_xpath(xpath1))     # 获得该页所有商品连接所在elements
                         for link in links:
-                            similarProductSearch.switchHandle(self, driver)
+                            Similarproductsearch.switchHandle(self, driver)
                             time.sleep(3)
                             try:
                                 link.click()
-                                similarProductSearch.getInfoTwo(self, driver)   # 点击进入商品页
+                                Similarproductsearch.getInfoTwo(self, driver)   # 点击进入商品页
                             except Exception as e:
                                 print('getIntoTwo Error')
                                 print(link.get_attribute("href"))
@@ -57,7 +62,7 @@ class similarProductSearch(unittest.TestCase):
 
                         if len(driver.window_handles) > 1:  # 判断是否已回到搜索页，否则删除当前页
                             driver.close()
-                            similarProductSearch.switchHandle(self, driver)
+                            Similarproductsearch.switchHandle(self, driver)
                             time.sleep(3)
 
                         try:
@@ -75,7 +80,7 @@ class similarProductSearch(unittest.TestCase):
                         continue
             finally:
                 time.sleep(3)
-                similarProductSearch.switchHandle(self, driver)
+                Similarproductsearch.switchHandle(self, driver)
                 driver.find_element_by_xpath('//*[@id="mq"]').clear()   # 删除搜索框中文字
                 time.sleep(3)
 
@@ -86,18 +91,18 @@ class similarProductSearch(unittest.TestCase):
     def getInfoOne(self, driver):   # 进入套装个页，点击各商品获取相关信息
         time.sleep(3)
 
-        similarProductSearch.switchHandle(self, driver)
+        Similarproductsearch.switchHandle(self, driver)
         for i in range(30):
             goodlinks = (l for l in driver.find_elements_by_xpath('.//h4[@class="proInfo-title"]/a'))
             for good in goodlinks:
-                similarProductSearch.switchHandle(self, driver)
+                Similarproductsearch.switchHandle(self, driver)
 
                 time.sleep(3)
                 good.send_keys(Keys.ENTER)
-                similarProductSearch.getInfoTwo(self, driver)   # 商品个页def
+                Similarproductsearch.getInfoTwo(self, driver)   # 商品个页def
 
             try:    # 点击下一页的功能
-                similarProductSearch.switchHandle(self, driver)
+                Similarproductsearch.switchHandle(self, driver)
                 time.sleep(3)
                 nextPage = driver.find_element_by_xpath('.//a[@class="ui-page-next"]')
                 nextPage.click()
@@ -105,7 +110,7 @@ class similarProductSearch(unittest.TestCase):
 
                 print(e)
                 time.sleep(5)
-                similarProductSearch.switchHandle(self, driver)
+                Similarproductsearch.switchHandle(self, driver)
                 # driver.close()
                 break
             finally:
@@ -113,7 +118,7 @@ class similarProductSearch(unittest.TestCase):
 
     def getInfoTwo(self, driver):   # 进入商品个页，获取商品相关信息
         time.sleep(3)
-        similarProductSearch.switchHandle(self, driver)
+        Similarproductsearch.switchHandle(self, driver)
         goodInfo = []
         time.sleep(10)
 
@@ -148,7 +153,7 @@ class similarProductSearch(unittest.TestCase):
 
         time.sleep(10)
         # 最后写入文本
-        with open('similarProduct.txt', 'a', encoding='utf-8') as f:
+        with open(productInfo, 'a', encoding='utf-8') as f:
             for info in goodInfo:
                 f.write('%s\n' % info)
             f.close()

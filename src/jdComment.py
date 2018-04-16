@@ -7,15 +7,15 @@ from selenium import webdriver
 
 
 class commentSearch:
-    def setUp(self, threadname, threadid):
+    def setUp(self, threadname, threadid, N, names, links, comment):
         chrome_options = webdriver.ChromeOptions()
         prefs = {"profile.managed_default_content_settings.images": 2}
         chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(chrome_options=chrome_options)
 
-        self.test_search_in_python_org(threadname, threadid, driver)
+        self.test_search_in_python_org(threadname, threadid, driver, N, names, links, comment)
 
-    def test_search_in_python_org(self, threadname, threadid, driver):
+    def test_search_in_python_org(self, threadname, threadid, driver, N, names, links, comment):
         if threadid == 1:
             goodname = names[0:N//2]
             goodlink = links[0:N//2]
@@ -40,20 +40,20 @@ class commentSearch:
             driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[4]/a').send_keys(Keys.ENTER)
             time.sleep(2)
             greatid = '//div[@id="comment-3"]'
-            commentSearch.commSpider(self, greatid, name, driver, threadname)
+            commentSearch.commSpider(self, greatid, name, driver, threadname, comment)
 
             driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[5]/a').send_keys(Keys.ENTER)
             time.sleep(2)
             middleid = '//div[@id="comment-4"]'
-            commentSearch.commSpider(self, middleid, name, driver, threadname)
+            commentSearch.commSpider(self, middleid, name, driver, threadname, comment)
 
             driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[6]/a').send_keys(Keys.ENTER)
             time.sleep(2)
             badid = '//div[@id="comment-5"]'
-            commentSearch.commSpider(self, badid, name, driver, threadname)
+            commentSearch.commSpider(self, badid, name, driver, threadname, comment)
         self.driver.close()
 
-    def commSpider(self, idpath, name, driver, threadname):
+    def commSpider(self, idpath, name, driver, threadname, comment):
         with open(comment, 'a', encoding='utf-8') as f:
             for i in range(300):
                 string = threadname + ':the ' + str(i+1) + 'th page comment'
@@ -97,32 +97,37 @@ class commentSearch:
 
 
 class myThread(threading.Thread):   # 继承threading.Thread
-    def __init__(self, threadid, name):
+    def __init__(self, threadid, name, N, names, links, comment):
         threading.Thread.__init__(self)
         self.threadID = threadid
         self.name = name
+        self.N = N
+        self.names = names
+        self.links = links
+        self.comment = comment
 
     def run(self):
         driver = commentSearch()
-        driver.setUp(self.name, self.threadID)
+        driver.setUp(self.name, self.threadID, self.N, self.names, self.links, self.comment)
 
-dataPath = os.path.abspath('..')    # 工程根目录
-link = dataPath + r'\data\jdGood.txt'
-comment = dataPath + r'\data\jdComment.txt'
-with open(link, encoding='utf-8') as reader:
-        names = []
-        links = []
-        for index, line in enumerate(reader):
-            if index % 2 == 0:
-                names.append(line)
-            else:
-                links.append(line)
-        reader.close()
-print("file load over.")
-N = len(names)
+if __name__ == "__main__":
+    dataPath = os.path.abspath('..')    # 工程根目录
+    link = dataPath + r'\data\jdGood.txt'
+    comment = dataPath + r'\data\jdComment.txt'
+    with open(link, encoding='utf-8') as reader:
+            names = []
+            links = []
+            for index, line in enumerate(reader):
+                if index % 2 == 0:
+                    names.append(line)
+                else:
+                    links.append(line)
+            reader.close()
+    print("file load over.")
+    N = len(names)
 
-thread1 = myThread(1, "Thread-1")
-thread2 = myThread(2, "Thread-2")
+    thread1 = myThread(1, "Thread-1", N)
+    thread2 = myThread(2, "Thread-2", N)
 
-thread1.start()
-thread2.start()
+    thread1.start()
+    thread2.start()

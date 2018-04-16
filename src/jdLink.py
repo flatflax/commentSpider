@@ -8,29 +8,33 @@ import os
 
 dataPath = os.path.abspath('..')    # 工程根目录
 file = dataPath + r'\data\jdGood.txt'
+urlfile = dataPath + r'\data\jdUrl.txt'
 
 
-class PythonOrgSearch(unittest.TestCase):
+class ShopGoodSearch():
 
     def setUp(self):
-        self.driver = webdriver.Chrome()
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {"profile.managed_default_content_settings.images": 2}
+        chrome_options.add_experimental_option("prefs", prefs)
+        self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
-    def test_search_in_python_org(self):
+    def test_search_in_python_org(self, url):
         driver = self.driver
         with open(file, 'a', encoding='utf-8') as f:
             doc = Document()
             string = "JDgood"
             jdspider = doc.createElement(string)
             doc.appendChild(jdspider)
-            url = 'https://sony.jd.com/view_search-395323-0-5-1-24-1.html'
             time.sleep(3)
             driver.get(url)
 
             for i in range(20):
-                xpath1 = './/div[@class="jDesc"]/a'
+                xpath1 = './/div[@class="jGoodsInfo"]/div[1]/a'
+                # having './div[jGoodsInfo]/div[jDesc]' and './div[jGoodsInfo]/user_tj_title'
                 xpath2 = './/div[@class="jDesc"]/a'
                 goodNames = [n.text for n in driver.find_elements_by_xpath(xpath1)]
-                goodLinks = [l.get_attribute("href") for l in driver.find_elements_by_xpath(xpath2)]
+                goodLinks = [l.get_attribute("href") for l in driver.find_elements_by_xpath(xpath1)]
 
                 length = len(goodNames)
                 for w in range(length):
@@ -38,12 +42,15 @@ class PythonOrgSearch(unittest.TestCase):
                     f.write('%s\n' % goodLinks[w])
 
                 try:
-                    elem = driver.find_element_by_xpath('.//div[@class="jPage"]/a[@class="current"]/following-sibling::a[1]')
-                    print(elem.text)
-                    time.sleep(10)
-                    elem.send_keys(Keys.ENTER)
-                except:
-                    str1 = str(i)+"st page has been caught."
+                    goodXpath = './/div[@class="jPage"]/a[@class="current"]/following-sibling::a[1]'
+                    elem = driver.find_element_by_xpath(goodXpath)
+                    print('the next page:', elem.text)
+                    time.sleep(3)
+                    elem.click()
+                    print('sent Enter to get the next page')
+                except Exception as e:
+                    print(e)
+                    str1 = str(i+1)+"st page has been caught."
                     print(str1)
                     break
                 finally:
@@ -86,6 +93,20 @@ class PythonOrgSearch(unittest.TestCase):
             glink.appendChild(name_text)
             docu.appendChild(glink)
 
+    def getShopUrl(self):
+        with open(urlfile, encoding='utf-8') as f:
+            self.urls = []
+            for index, line in enumerate(f):
+                self.urls.append(line)
+            f.close()
+
 
 if __name__ == "__main__":
-    unittest.main()
+    test = ShopGoodSearch()
+    test.getShopUrl()
+    test.setUp()
+    for url in test.urls:
+        print('the shop url:', url)
+        test.test_search_in_python_org(url)
+    print('over')
+    test.tearDown()

@@ -37,20 +37,25 @@ class commentSearch:
             elem.click()
             time.sleep(3)
 
-            driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[4]/a').send_keys(Keys.ENTER)
-            time.sleep(2)
-            greatid = '//div[@id="comment-3"]'
-            commentSearch.commSpider(self, greatid, name, driver, threadname, comment)
+            try:
+                driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[4]/a').send_keys(Keys.ENTER)
+                time.sleep(2)
+                greatid = '//div[@id="comment-3"]'
+                commentSearch.commSpider(self, greatid, name, driver, threadname, comment)
 
-            driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[5]/a').send_keys(Keys.ENTER)
-            time.sleep(2)
-            middleid = '//div[@id="comment-4"]'
-            commentSearch.commSpider(self, middleid, name, driver, threadname, comment)
+                driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[5]/a').send_keys(Keys.ENTER)
+                time.sleep(2)
+                middleid = '//div[@id="comment-4"]'
+                commentSearch.commSpider(self, middleid, name, driver, threadname, comment)
 
-            driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[6]/a').send_keys(Keys.ENTER)
-            time.sleep(2)
-            badid = '//div[@id="comment-5"]'
-            commentSearch.commSpider(self, badid, name, driver, threadname, comment)
+                driver.find_element_by_xpath('//*[@id="comment"]/div[2]/div[2]/div[1]/ul/li[6]/a').send_keys(Keys.ENTER)
+                time.sleep(2)
+                badid = '//div[@id="comment-5"]'
+                commentSearch.commSpider(self, badid, name, driver, threadname, comment)
+            except Exception as e:
+                print(e)
+            finally:
+                time.sleep(2)
         self.driver.close()
 
     def commSpider(self, idpath, name, driver, threadname, comment):

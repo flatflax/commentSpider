@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html xmlns:wb="http://open.weibo.com/wb">
+
+<head>
+  <meta charset="utf-8">
+<meta name="renderer" content="webkit"> <!-- for 360 指定内核 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"04a00c82a2","applicationID":"27691518","transactionName":"IVdbRBdeWFRSQ01VERZRVlwAQhtLX14V","queueTime":0,"applicationTime":65,"agent":""}</script>
+<script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"VQUOU1NaDhACU1dbBgQGXg=="};window.NREUM||(NREUM={}),__nr_require=function(t,n,e){function r(e){if(!n[e]){var o=n[e]={exports:{}};t[e][0].call(o.exports,function(n){var o=t[e][1][n];return r(o||n)},o,o.exports)}return n[e].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<e.length;o++)r(e[o]);return r}({1:[function(t,n,e){function r(t){try{s.console&&console.log(t)}catch(n){}}var o,i=t("ee"),a=t(15),s={};try{o=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof console.log&&(s.console=!0,o.indexOf("dev")!==-1&&(s.dev=!0),o.indexOf("nr_dev")!==-1&&(s.nrDev=!0))}catch(c){}s.nrDev&&i.on("internal-error",function(t){r(t.stack)}),s.dev&&i.on("fn-err",function(t,n,e){r(e.stack)}),s.dev&&(r("NR AGENT IN DEVELOPMENT MODE"),r("flags: "+a(s,function(t,n){return t}).join(", ")))},{}],2:[function(t,n,e){function r(t,n,e,r,s){try{p?p-=1:o(s||new UncaughtException(t,n,e),!0)}catch(f){try{i("ierr",[f,c.now(),!0])}catch(d){}}return"function"==typeof u&&u.apply(this,a(arguments))}function UncaughtException(t,n,e){this.message=t||"Uncaught error with no additional information",this.sourceURL=n,this.line=e}function o(t,n){var e=n?null:c.now();i("err",[t,e])}var i=t("handle"),a=t(16),s=t("ee"),c=t("loader"),f=t("gos"),u=window.onerror,d=!1,l="nr@seenError",p=0;c.features.err=!0,t(1),window.onerror=r;try{throw new Error}catch(h){"stack"in h&&(t(8),t(7),"addEventListener"in window&&t(5),c.xhrWrappable&&t(9),d=!0)}s.on("fn-start",function(t,n,e){d&&(p+=1)}),s.on("fn-err",function(t,n,e){d&&!e[l]&&(f(e,l,function(){return!0}),this.thrown=!0,o(e))}),s.on("fn-end",function(){d&&!this.thrown&&p>0&&(p-=1)}),s.on("internal-error",function(t){i("ierr",[t,c.now(),!0])})},{}],3:[function(t,n,e){t("loader").features.ins=!0},{}],4:[function(t,n,e){function r(t){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var o=t("ee"),i=t("handle"),a=t(8),s=t(7),c="learResourceTimings",f="addEventListener",u="resourcetimingbufferfull",d="bstResource",l="resource",p="-start",h="-end",m="fn"+p,w="fn"+h,v="bstTimer",y="pushState",g=t("loader");g.features.stn=!0,t(6);var b=NREUM.o.EV;o.on(m,function(t,n){var e=t[0];e instanceof b&&(this.bstStart=g.now())}),o.on(w,function(t,n){var e=t[0];e instanceof b&&i("bst",[e,n,this.bstStart,g.now()])}),a.on(m,function(t,n,e){this.bstStart=g.now(),this.bstType=e}),a.on(w,function(t,n){i(v,[n,this.bstStart,g.now(),this.bstType])}),s.on(m,function(){this.bstStart=g.now()}),s.on(w,function(t,n){i(v,[n,this.bstStart,g.now(),"requestAnimationFrame"])}),o.on(y+p,function(t){this.time=g.now(),this.startPath=location.pathname+location.hash}),o.on(y+h,function(t){i("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),f in window.performance&&(window.performance["c"+c]?window.performance[f](u,function(t){i(d,[window.performance.getEntriesByType(l)]),window.performance["c"+c]()},!1):window.performance[f]("webkit"+u,function(t){i(d,[window.performance.getEntriesByType(l)]),window.performance["webkitC"+c]()},!1)),document[f]("scroll",r,{passive:!0}),document[f]("keypress",r,!1),document[f]("click",r,!1)}},{}],5:[function(t,n,e){function r(t){for(var n=t;n&&!n.hasOwnProperty(u);)n=Object.getPrototypeOf(n);n&&o(n)}function o(t){s.inPlace(t,[u,d],"-",i)}function i(t,n){return t[1]}var a=t("ee").get("events"),s=t(18)(a,!0),c=t("gos"),f=XMLHttpRequest,u="addEventListener",d="removeEventListener";n.exports=a,"getPrototypeOf"in Object?(r(document),r(window),r(f.prototype)):f.prototype.hasOwnProperty(u)&&(o(window),o(f.prototype)),a.on(u+"-start",function(t,n){var e=t[1],r=c(e,"nr@wrapped",function(){function t(){if("function"==typeof e.handleEvent)return e.handleEvent.apply(e,arguments)}var n={object:t,"function":e}[typeof e];return n?s(n,"fn-",null,n.name||"anonymous"):e});this.wrapped=t[1]=r}),a.on(d+"-start",function(t){t[1]=this.wrapped||t[1]})},{}],6:[function(t,n,e){var r=t("ee").get("history"),o=t(18)(r);n.exports=r,o.inPlace(window.history,["pushState","replaceState"],"-")},{}],7:[function(t,n,e){var r=t("ee").get("raf"),o=t(18)(r),i="equestAnimationFrame";n.exports=r,o.inPlace(window,["r"+i,"mozR"+i,"webkitR"+i,"msR"+i],"raf-"),r.on("raf-start",function(t){t[0]=o(t[0],"fn-")})},{}],8:[function(t,n,e){function r(t,n,e){t[0]=a(t[0],"fn-",null,e)}function o(t,n,e){this.method=e,this.timerDuration=isNaN(t[1])?0:+t[1],t[0]=a(t[0],"fn-",this,e)}var i=t("ee").get("timer"),a=t(18)(i),s="setTimeout",c="setInterval",f="clearTimeout",u="-start",d="-";n.exports=i,a.inPlace(window,[s,"setImmediate"],s+d),a.inPlace(window,[c],c+d),a.inPlace(window,[f,"clearImmediate"],f+d),i.on(c+u,r),i.on(s+u,o)},{}],9:[function(t,n,e){function r(t,n){d.inPlace(n,["onreadystatechange"],"fn-",s)}function o(){var t=this,n=u.context(t);t.readyState>3&&!n.resolved&&(n.resolved=!0,u.emit("xhr-resolved",[],t)),d.inPlace(t,y,"fn-",s)}function i(t){g.push(t),h&&(x?x.then(a):w?w(a):(E=-E,O.data=E))}function a(){for(var t=0;t<g.length;t++)r([],g[t]);g.length&&(g=[])}function s(t,n){return n}function c(t,n){for(var e in t)n[e]=t[e];return n}t(5);var f=t("ee"),u=f.get("xhr"),d=t(18)(u),l=NREUM.o,p=l.XHR,h=l.MO,m=l.PR,w=l.SI,v="readystatechange",y=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"],g=[];n.exports=u;var b=window.XMLHttpRequest=function(t){var n=new p(t);try{u.emit("new-xhr",[n],n),n.addEventListener(v,o,!1)}catch(e){try{u.emit("internal-error",[e])}catch(r){}}return n};if(c(p,b),b.prototype=p.prototype,d.inPlace(b.prototype,["open","send"],"-xhr-",s),u.on("send-xhr-start",function(t,n){r(t,n),i(n)}),u.on("open-xhr-start",r),h){var x=m&&m.resolve();if(!w&&!m){var E=1,O=document.createTextNode(E);new h(a).observe(O,{characterData:!0})}}else f.on("fn-end",function(t){t[0]&&t[0].type===v||a()})},{}],10:[function(t,n,e){function r(t){var n=this.params,e=this.metrics;if(!this.ended){this.ended=!0;for(var r=0;r<d;r++)t.removeEventListener(u[r],this.listener,!1);if(!n.aborted){if(e.duration=a.now()-this.startTime,4===t.readyState){n.status=t.status;var i=o(t,this.lastSize);if(i&&(e.rxSize=i),this.sameOrigin){var c=t.getResponseHeader("X-NewRelic-App-Data");c&&(n.cat=c.split(", ").pop())}}else n.status=0;e.cbTime=this.cbTime,f.emit("xhr-done",[t],t),s("xhr",[n,e,this.startTime])}}}function o(t,n){var e=t.responseType;if("json"===e&&null!==n)return n;var r="arraybuffer"===e||"blob"===e||"json"===e?t.response:t.responseText;return h(r)}function i(t,n){var e=c(n),r=t.params;r.host=e.hostname+":"+e.port,r.pathname=e.pathname,t.sameOrigin=e.sameOrigin}var a=t("loader");if(a.xhrWrappable){var s=t("handle"),c=t(11),f=t("ee"),u=["load","error","abort","timeout"],d=u.length,l=t("id"),p=t(14),h=t(13),m=window.XMLHttpRequest;a.features.xhr=!0,t(9),f.on("new-xhr",function(t){var n=this;n.totalCbs=0,n.called=0,n.cbTime=0,n.end=r,n.ended=!1,n.xhrGuids={},n.lastSize=null,p&&(p>34||p<10)||window.opera||t.addEventListener("progress",function(t){n.lastSize=t.loaded},!1)}),f.on("open-xhr-start",function(t){this.params={method:t[0]},i(this,t[1]),this.metrics={}}),f.on("open-xhr-end",function(t,n){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&n.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),f.on("send-xhr-start",function(t,n){var e=this.metrics,r=t[0],o=this;if(e&&r){var i=h(r);i&&(e.txSize=i)}this.startTime=a.now(),this.listener=function(t){try{"abort"===t.type&&(o.params.aborted=!0),("load"!==t.type||o.called===o.totalCbs&&(o.onloadCalled||"function"!=typeof n.onload))&&o.end(n)}catch(e){try{f.emit("internal-error",[e])}catch(r){}}};for(var s=0;s<d;s++)n.addEventListener(u[s],this.listener,!1)}),f.on("xhr-cb-time",function(t,n,e){this.cbTime+=t,n?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof e.onload||this.end(e)}),f.on("xhr-load-added",function(t,n){var e=""+l(t)+!!n;this.xhrGuids&&!this.xhrGuids[e]&&(this.xhrGuids[e]=!0,this.totalCbs+=1)}),f.on("xhr-load-removed",function(t,n){var e=""+l(t)+!!n;this.xhrGuids&&this.xhrGuids[e]&&(delete this.xhrGuids[e],this.totalCbs-=1)}),f.on("addEventListener-end",function(t,n){n instanceof m&&"load"===t[0]&&f.emit("xhr-load-added",[t[1],t[2]],n)}),f.on("removeEventListener-end",function(t,n){n instanceof m&&"load"===t[0]&&f.emit("xhr-load-removed",[t[1],t[2]],n)}),f.on("fn-start",function(t,n,e){n instanceof m&&("onload"===e&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=a.now()))}),f.on("fn-end",function(t,n){this.xhrCbStart&&f.emit("xhr-cb-time",[a.now()-this.xhrCbStart,this.onload,n],n)})}},{}],11:[function(t,n,e){n.exports=function(t){var n=document.createElement("a"),e=window.location,r={};n.href=t,r.port=n.port;var o=n.href.split("://");!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=n.hostname||e.hostname,r.pathname=n.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname);var i=!n.protocol||":"===n.protocol||n.protocol===e.protocol,a=n.hostname===document.domain&&n.port===e.port;return r.sameOrigin=i&&(!n.hostname||a),r}},{}],12:[function(t,n,e){function r(){}function o(t,n,e){return function(){return i(t,[f.now()].concat(s(arguments)),n?null:this,e),n?void 0:this}}var i=t("handle"),a=t(15),s=t(16),c=t("ee").get("tracer"),f=t("loader"),u=NREUM;"undefined"==typeof window.newrelic&&(newrelic=u);var d=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],l="api-",p=l+"ixn-";a(d,function(t,n){u[n]=o(l+n,!0,"api")}),u.addPageAction=o(l+"addPageAction",!0),u.setCurrentRouteName=o(l+"routeName",!0),n.exports=newrelic,u.interaction=function(){return(new r).get()};var h=r.prototype={createTracer:function(t,n){var e={},r=this,o="function"==typeof n;return i(p+"tracer",[f.now(),t,e],r),function(){if(c.emit((o?"":"no-")+"fn-start",[f.now(),r,o],e),o)try{return n.apply(this,arguments)}catch(t){throw c.emit("fn-err",[arguments,this,t],e),t}finally{c.emit("fn-end",[f.now()],e)}}}};a("setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(t,n){h[n]=o(p+n)}),newrelic.noticeError=function(t){"string"==typeof t&&(t=new Error(t)),i("err",[t,f.now()])}},{}],13:[function(t,n,e){n.exports=function(t){if("string"==typeof t&&t.length)return t.length;if("object"==typeof t){if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if(!("undefined"!=typeof FormData&&t instanceof FormData))try{return JSON.stringify(t).length}catch(n){return}}}},{}],14:[function(t,n,e){var r=0,o=navigator.userAgent.match(/Firefox[\/\s](\d+\.\d+)/);o&&(r=+o[1]),n.exports=r},{}],15:[function(t,n,e){function r(t,n){var e=[],r="",i=0;for(r in t)o.call(t,r)&&(e[i]=n(r,t[r]),i+=1);return e}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],16:[function(t,n,e){function r(t,n,e){n||(n=0),"undefined"==typeof e&&(e=t?t.length:0);for(var r=-1,o=e-n||0,i=Array(o<0?0:o);++r<o;)i[r]=t[n+r];return i}n.exports=r},{}],17:[function(t,n,e){n.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],18:[function(t,n,e){function r(t){return!(t&&t instanceof Function&&t.apply&&!t[a])}var o=t("ee"),i=t(16),a="nr@original",s=Object.prototype.hasOwnProperty,c=!1;n.exports=function(t,n){function e(t,n,e,o){function nrWrapper(){var r,a,s,c;try{a=this,r=i(arguments),s="function"==typeof e?e(r,a):e||{}}catch(f){l([f,"",[r,a,o],s])}u(n+"start",[r,a,o],s);try{return c=t.apply(a,r)}catch(d){throw u(n+"err",[r,a,d],s),d}finally{u(n+"end",[r,a,c],s)}}return r(t)?t:(n||(n=""),nrWrapper[a]=t,d(t,nrWrapper),nrWrapper)}function f(t,n,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<n.length;c++)s=n[c],a=t[s],r(a)||(t[s]=e(a,f?s+o:o,i,s))}function u(e,r,o){if(!c||n){var i=c;c=!0;try{t.emit(e,r,o,n)}catch(a){l([a,e,r,o])}c=i}}function d(t,n){if(Object.defineProperty&&Object.keys)try{var e=Object.keys(t);return e.forEach(function(e){Object.defineProperty(n,e,{get:function(){return t[e]},set:function(n){return t[e]=n,n}})}),n}catch(r){l([r])}for(var o in t)s.call(t,o)&&(n[o]=t[o]);return n}function l(n){try{t.emit("internal-error",n)}catch(e){}}return t||(t=o),e.inPlace=f,e.flag=a,e}},{}],ee:[function(t,n,e){function r(){}function o(t){function n(t){return t&&t instanceof r?t:t?c(t,s,i):i()}function e(e,r,o,i){if(!l.aborted||i){t&&t(e,r,o);for(var a=n(o),s=h(e),c=s.length,f=0;f<c;f++)s[f].apply(a,r);var d=u[y[e]];return d&&d.push([g,e,r,a]),a}}function p(t,n){v[t]=h(t).concat(n)}function h(t){return v[t]||[]}function m(t){return d[t]=d[t]||o(e)}function w(t,n){f(t,function(t,e){n=n||"feature",y[e]=n,n in u||(u[n]=[])})}var v={},y={},g={on:p,emit:e,get:m,listeners:h,context:n,buffer:w,abort:a,aborted:!1};return g}function i(){return new r}function a(){(u.api||u.feature)&&(l.aborted=!0,u=l.backlog={})}var s="nr@context",c=t("gos"),f=t(15),u={},d={},l=n.exports=o();l.backlog=u},{}],gos:[function(t,n,e){function r(t,n,e){if(o.call(t,n))return t[n];var r=e();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,n,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return t[n]=r,r}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],handle:[function(t,n,e){function r(t,n,e,r){o.buffer([t],r),o.emit(t,n,e)}var o=t("ee").get("handle");n.exports=r,r.ee=o},{}],id:[function(t,n,e){function r(t){var n=typeof t;return!t||"object"!==n&&"function"!==n?-1:t===window?0:a(t,i,function(){return o++})}var o=1,i="nr@id",a=t("gos");n.exports=r},{}],loader:[function(t,n,e){function r(){if(!x++){var t=b.info=NREUM.info,n=l.getElementsByTagName("script")[0];if(setTimeout(u.abort,3e4),!(t&&t.licenseKey&&t.applicationID&&n))return u.abort();f(y,function(n,e){t[n]||(t[n]=e)}),c("mark",["onload",a()+b.offset],null,"api");var e=l.createElement("script");e.src="https://"+t.agent,n.parentNode.insertBefore(e,n)}}function o(){"complete"===l.readyState&&i()}function i(){c("mark",["domContent",a()+b.offset],null,"api")}function a(){return E.exists&&performance.now?Math.round(performance.now()):(s=Math.max((new Date).getTime(),s))-b.offset}var s=(new Date).getTime(),c=t("handle"),f=t(15),u=t("ee"),d=window,l=d.document,p="addEventListener",h="attachEvent",m=d.XMLHttpRequest,w=m&&m.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:m,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var v=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1071.min.js"},g=m&&w&&w[p]&&!/CriOS/.test(navigator.userAgent),b=n.exports={offset:s,now:a,origin:v,features:{},xhrWrappable:g};t(12),l[p]?(l[p]("DOMContentLoaded",i,!1),d[p]("load",r,!1)):(l[h]("onreadystatechange",o),d[h]("onload",r)),c("mark",["firstbyte",s],null,"api");var x=0,E=t(17)},{}]},{},["loader",2,10,4,3]);</script>
+<link rel="icon" href="https://static.g-cores.com/favicon.ico" type="image/x-icon" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="5Sf5CsEVEYeLjphtGNXm/gwBoF8E/WPaAv424jdvtKiKeTcmqRPH58UjlGUFgDeVfaDeyLw17PYLu06/qoK0Tg==" />
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"></meta>
+  <link rel="stylesheet" media="all" href="https://alioss.g-cores.com/assets/application-3bb2e90cb218dcd64806a3bb4d7b09622dfab4fd6a4fe9e1eaf3be76d20fc1c2.css" />
+  
+
+<link rel="stylesheet" media="screen" href="https://alioss.g-cores.com/assets/specific/articles/show-2170bc00538149237bfba449b2ceac3a4fe93f7cb674742701b3de915346c27c.css" />
+  <style type="text/css">
+    .p_disclaimer {
+      margin: 10px auto 0;
+      padding: 0 15px 0 100px;
+      max-width: 700px;
+      text-align: right;
+      font-size: 12px;
+    }
+  </style>
+  <style>
+    .p_vote {
+      margin: 50px 0 20px;
+      text-align: center;
+      color: #888;
+    }
+    .p_voteBtn {
+      display: inline-block;
+      padding: 15px 20px;
+      line-height: 1;
+      font-size: 14px;
+      border: 1px solid #bbb;
+      color: #1C9963;
+    }
+    .p_voteBtn:hover, .p_voteBtn:active, .p_voteBtn:focus {
+      color: #1C9963;
+      border-color: #888;
+      text-decoration: none;
+    }
+    .p_voteBtn.active {
+      border: 1px solid #1C9963;
+      color: #fff;
+      background: #1C9963;
+    }
+  </style>
+
+
+<!--[if lt IE 9]>
+  <script src="https://alioss.g-cores.com/assets/html5shiv-99cb6d655922cd55cf310aa415c20655b29fc141d48778feb15f0ca3c732cf0a.js"></script><script src="https://alioss.g-cores.com/assets/respond/1.4.2/respond.min-5098b6c38985756e424a7c59535a58c3e6c616881478ab726f0837c5c7ef8ff0.js"></script>
+
+    <link href="https://alioss.g-cores.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+    <link href="/respond.proxy.gif" id="respond-redirect" rel="respond-redirect" />
+    <script src="/respond.proxy.js"></script>
+<![endif]-->
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  var cookieValue = '; ' + document.cookie;
+  var parts = cookieValue.split('; userID=');
+  if (parts.length == 2) {
+    var userId = parts.pop().split(';').shift();
+    ga('create', 'UA-97176249-1', 'auto', { userId: userId });
+  } else {
+    ga('create', 'UA-97176249-1', 'auto');
+  }
+  ga('send', 'pageview');
+</script>
+
+
+  <title>
+    御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图 | 
+    机核
+  </title>
+
+    <meta name="keywords" content="堡垒之夜">
+
+  <meta name="description" content="kotaku提到了一位youtube上的《堡垒之夜》主播NoahJ456达成的一项壮举：踩着火箭弹横穿整个《堡垒之夜》PVP模式的地图。
+作为现在大热的大逃杀游戏，《堡垒之夜》由于其PVE带来的建筑玩法，因此在整体对抗风格上更加张扬、浮夸和火爆，折腾起来也十分欢乐。
+在很多人搞清楚如何”御箭飞行“之后，有很多骑">
+
+<link href="https://www.g-cores.com/rss" rel="alternate" type="application/rss+xml" title="Gamecores Feed" />
+
+  <link rel="apple-touch-icon" href="/touch-icon-iphone.png" /> 
+<link rel="apple-touch-icon" sizes="76x76" href="/touch-icon-ipad.png" /> 
+<link rel="apple-touch-icon" sizes="120x120" href="/touch-icon-iphone-retina.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="/touch-icon-ipad-retina.png" />
+  <meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.g-cores.com/articles/97645" />
+<meta property="og:title" content="御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图" />
+<meta property="og:description" content="你看天上有个人在飞" />
+<meta property="og:image" content="https://alioss.g-cores.com/uploads/article/ef78430a-27e9-4325-8a43-8ee12b51971a_hl.jpg" />
+
+<!-- <script src="https://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script> -->
+
+</head>
+
+<body class="body-fixedNavbar">
+  
+<nav class="navbar navbar-default navbar-fixed-top" id="j_app_navbar" role="navigation">
+  <div class="container">
+    <div class="navbar_header">
+      <button type="button" class="navbar_toggle" data-toggle="collapse" data-target="#j_navbarCollapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar_brand navbar_brand-affix" target="_blank" href="http://shop124260606.taobao.com">
+        <img class="navbar_brand-affix_white" src="https://alioss.g-cores.com/assets/store-logo-white-9b591191580455f5508d8c3be70070e541e53e080b02db926927fbd6c5eb9818.png" alt="" />
+        <img class="navbar_brand-affix_red" src="https://alioss.g-cores.com/assets/store-logo-ed751e2646f74761d83d1c404d6f28046f68dd8863b934be16beb8e3201cbbdd.png" alt="" />
+</a>      <a class="navbar_brand navbar_brand-logo" id="j_logo" href="https://www.g-cores.com/">
+        <img src="https://alioss.g-cores.com/assets/logo-new-0b66d0ff8fa364ff567e08b95ec448b14220b9d5612d7563ece5226b7443068b.png" alt="" />
+</a>    </div>
+
+    
+
+
+<!-- Collect the nav links, forms, and other content for toggling -->
+<div class="collapse collapsed navbar_collapse" id="j_navbarCollapse">
+    <ul class="nav navbar_nav navbar_right">
+      <li><a href="https://www.g-cores.com/account/signin">登录</a></li>
+      <li><a href="https://www.g-cores.com/account/signup">注册</a></li>
+    </ul>
+
+
+  <form class="navbar_search" action="https://www.g-cores.com/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+  <span class="fa fa-search"></span>
+  <input type="text" name="keyword" placeholder="Search">
+</form>
+
+  <ul class="nav navbar_nav navbar_right" id="j_nav">
+    <li><a href="https://www.g-cores.com/categories/2">新闻</a></li>
+    <li><a href="https://www.g-cores.com/categories/1">文章</a></li>
+    <li><a href="https://www.g-cores.com/categories/9">电台</a></li>
+    <li><a href="https://www.g-cores.com/categories/8">视频</a></li>
+    <li><a href="https://www.g-cores.com/gtalk">GTalk</a></li>
+    <li class="dropdown">
+      <a href="javascript:;" data-toggle="dropdown">平台</a>
+      <ul class="dropdown_menu navbar_consolesContainer" role="menu">
+        <li class="navbar_consoles">
+          <div class="navbar_console">
+            <h3>Microsoft</h3>
+            <ul>
+              <li>
+                <a href="https://www.g-cores.com/labels/4/originals">XBOX 360</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/8/originals">XBOX ONE</a>
+              </li>
+            </ul>
+          </div>
+          <div class="navbar_console">
+            <h3>PlayStation</h3>
+            <ul>
+              <li>
+                <a href="https://www.g-cores.com/labels/9/originals">PlayStation 4</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/1/originals">PlayStation 3</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/6/originals">PlayStation Vita</a>
+              </li>
+            </ul>
+          </div>
+          <div class="navbar_console">
+            <h3>Nintendo</h3>
+            <ul>
+              <li>
+                <a href="https://www.g-cores.com/labels/5/originals">3DS</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/2/originals">WiiU</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/3/originals">Wii</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/15/originals">Switch</a>
+              </li>
+            </ul>
+          </div>
+          <div class="navbar_console">
+            <h3>Others</h3>
+            <ul>
+              <li>
+                <a href="https://www.g-cores.com/labels/7/originals">PC</a>
+              </li>
+              <li>
+                <a href="https://www.g-cores.com/labels/10/originals">Mobile</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a style="padding: 10px 0;" href="https://www.g-cores.com/labels/11/originals">Retro Console</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown navbar_features">
+      <a href="javascript:;" data-toggle="dropdown">专题</a>
+      <ul class="dropdown_menu text-center" style="right: -50px;" role="menu">
+          <li>
+            <a href="/wow">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/wow-0ca673c1f19280cbc31c1623656f87b52eb9dd7785481836597e4d3ea4bd81ac.png" alt="" />
+</a>          </li>
+          <li>
+            <a href="/pokemoncard">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/pokemoncard-a1a7fffc665226baee221a1a18f236b70a920155e0480481178703cd8d497376.png" alt="" />
+</a>          </li>
+          <li>
+            <a href="/darksouls">
+              <img class="img-responsive" style="width: 110px;" src="https://alioss.g-cores.com/assets/special_topic/darksouls-910bd456a3cb41111520f2d63e688c65f97c2a94b17fc7abe48d53c14fdc0bd2.png" alt="" />
+</a>          </li>
+        <li>
+          <a href="https://www.g-cores.com/streetfightervs">
+            <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/gcc-10fe1872dd3207a549c0c3f8094170b7cad915f5e5551c151373e2419881723e.png" alt="" />
+</a>        </li>
+          <li>
+            <a href="/sfv">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/sf-0d5d1bf64caa965d8cc645c0018beffc2e58a7d8be098f86be35ecf2212be3b6.png" alt="" />
+</a>          </li>
+          <li>
+            <a href="/mh">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/mh-c4a585bcad21520836f52f7a62d6f8bc3fcc225be0905afd0df043f6bebfcd51.gif" alt="" />
+</a>          </li>
+          <li>
+            <a href="/fallout">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/fallout-576f8915091ce9b58baa105c0e1dfca1ca3b12ca0e7b9b699d1434d418569b59.jpg" alt="" />
+</a>          </li>
+          <li>
+            <a href="/ryugagotoku">
+              <img class="img-responsive" src="https://alioss.g-cores.com/assets/special_topic/rulong-e9c080d61e2507dffda338ef30d783c58af710b31673a4148736b54a13dd06d7.jpg" alt="" />
+</a>          </li>
+        <li>
+          <a href="/witcher" target="_blank">
+            <img class="img-responsive" src="https://alioss.g-cores.com/assets/witcher/logo-black-e4808bbf61fe9a5f9357c7b14f1d3c168b383cc4c33b6f5f444621670f3c3b3e.png" alt="" />
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="https://www.g-cores.com/app">App</a>
+    </li>
+  </ul>
+</div><!-- /.navbar-collapse -->
+
+
+  </div>
+</nav>
+
+<style type="text/css">
+  .navbar_brand-logo {
+    padding-left: 15px !important;
+    margin-left: 0 !important;
+  }
+  .navbar_brand-affix {
+    padding-right: 0 !important;
+  }
+  @media (min-width: 992px) {
+    .navbar_brand-affix {
+      margin-left: -50px !important;
+    }
+    .navbar_brand-logo {
+      padding-left: 0 !important;
+      margin-left: 0 !important;
+    }
+  }
+
+  .navbar_brand-affix img {
+    margin: -8px 0 0 0;
+    display: inline-block !important;
+  }
+  .navbar_brand-affix .navbar_brand-affix_red {
+    display: none !important;
+  }
+  .navbar_brand-affix:hover .navbar_brand-affix_white {
+    display: none !important;
+  }
+  .navbar_brand-affix:hover .navbar_brand-affix_red {
+    display: inline !important;
+  }
+</style>
+
+<!-- notifications -->
+
+
+
+  <div class="wrapper">
+    
+
+<div class="story_header" style="background-image: url('https://image.g-cores.com/ef78430a-27e9-4325-8a43-8ee12b51971a.jpg?x-oss-process=style/original_hsat2x')">
+  <div class="story_header_cover"></div>
+  <div class="story_header_imgContainer">
+    <div class="story_header_imgContainer_img">
+      <img data-no-retina="" alt="御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图" src="https://image.g-cores.com/ef78430a-27e9-4325-8a43-8ee12b51971a.jpg?x-oss-process=style/original_hsat2x" />
+    </div>
+  </div>
+  <div class="story_header_cover story_header_cover-second"></div>
+  <div class="story_header_inner" >
+    <div class="story_header_text">
+      <h1 class="story_title" id="j_title_preview">
+        御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图
+      </h1>
+      <p class="story_desc" id="j_desc_preview">
+        你看天上有个人在飞
+      </p>
+      <p class="story_info">2018-04-10 17:29:19</p>
+    </div>
+  </div>
+  <a class="story_user" href="/users/20803">
+    <div class="story_user_border">
+        <img src="https://alioss.g-cores.com/uploads/user/542a42df-4d1c-4685-8591-7fc1d800e794_normalat2x.jpg" alt="" />
+    </div>
+    <p class="story_user_name">
+      四十二
+    </p>
+</a>  <div class="story_consoles">
+      <a class="story_consoles_pc" title="PC" href="https://www.g-cores.com/labels/7/originals">PC</a>
+      <a class="story_consoles_xboxone" title="XBOX ONE" href="https://www.g-cores.com/labels/8/originals">XBOX ONE</a>
+      <a class="story_consoles_ps4" title="PS4" href="https://www.g-cores.com/labels/9/originals">PS4</a>
+  </div>
+</div>
+
+
+
+
+  <div id="j_story_20408" class="story">
+        <div class="story_elem story_elem-text ">
+          <p>kotaku提到了一位youtube上的《堡垒之夜》主播NoahJ456达成的一项壮举：踩着火箭弹横穿整个《堡垒之夜》PVP模式的地图。</p>
+
+        </div>
+        <div class="story_elem story_elem-embed j_story_elem" style="display:none;">
+          <textarea class="j_storyshow_textareaEmbed" style="display:none;">
+            <iframe width="640" height="360" src="https://v.miaopai.com/iframe?scid=k4l-tlQAwVVqN9SMJnsT5fGRhs6NyMRT2c5byQ__" frameborder="0" allowfullscreen></iframe>
+          </textarea>
+        </div>
+        <div class="story_elem story_elem-text ">
+          <p>作为现在大热的大逃杀游戏，《堡垒之夜》由于其PVE带来的建筑玩法，因此在整体对抗风格上更加张扬、浮夸和火爆，折腾起来也十分欢乐。</p>
+
+        </div>
+        <div class="story_elem story_elem-image ">
+          <a target="_blank" href="https://alioss.g-cores.com/uploads/image/4ad0060d-cf93-4dc3-9d09-0c3f6deaeca0_watermark.jpg">
+              <img class='j_storyshow_lazyload' data-original="https://alioss.g-cores.com/uploads/image/4ad0060d-cf93-4dc3-9d09-0c3f6deaeca0_watermark.jpg">
+</a>        </div>
+        <div class="story_elem story_elem-text ">
+          <p>在很多人搞清楚如何&rdquo;御箭飞行&ldquo;之后，有很多骑着火箭大打特打的战斗，不过这一次，骑着火箭横穿地图显然是对稳定性的挑战，你可以从视频中看到大哥NoahJ456利用制导火箭弹抛出时低速的特性，不断地创造新的顺风车，就这么一路横穿了整个地图。</p>
+
+        </div>
+        <div class="story_elem story_elem-text ">
+          <p>不知怎么的感觉还挺有战术优势的？</p>
+
+        </div>
+  </div>
+
+
+
+
+
+
+<div class="story_socialActions">
+  <a href="javascript:;" id="j_original_like" class="story_like ">
+    <span class="fa fa-thumbs-up"></span>
+    <strong id="j_original_likesNum">23</strong>
+  </a>
+  <a href="javascript:;" id="j_original_mark" class="story_bookmark " title="收藏">
+    <span class="fa fa-star"></span>
+  </a>
+  <a href="javascript:;" id="j_shareToWeibo" class="story_share">
+    <span class="fa fa-weibo"></span>
+  </a>
+  <a href="javascript:;" id="j_shareToWXBtn" data-toggle="popover" title="微信扫一扫" data-placement="top" data-container="body">
+    <span class="fa fa-weixin"></span>
+  </a>
+
+</div>
+
+
+
+<div class="row story_recommendations">
+    <div class="col-md-6">
+      <a class="story_header" style="background-image: url(&#39;https://image.g-cores.com/b1563ba1-c2c6-4c36-a14f-3fb66d54157b.jpg&#39;)" href="https://www.g-cores.com/articles/97855">
+        <div class="story_header_cover"></div>
+        <div class="story_header_imgContainer">
+          <div class="story_header_imgContainer_img">
+            <img data-no-retina="" alt="鸡与建筑师：为什么《堡垒之夜》的命运在一年之内发生了大逆转" src="https://image.g-cores.com/b1563ba1-c2c6-4c36-a14f-3fb66d54157b.jpg" />
+          </div>
+        </div>
+        <div class="story_header_cover story_header_cover-second"></div>
+        <div class="story_header_inner" >
+          <div class="story_header_text">
+            <p class="story_recommendations_head">
+              相关阅读
+            </p>
+            <h2 class="story_recommendations_title">
+              鸡与建筑师：为什么《堡垒之夜》的命运在一年之内发生了大逆转
+            </h2>
+            <p class="story_recommendations_info">
+              天降正义堡垒
+              2018-04-19 09:02:04
+            </p>
+          </div>
+        </div>
+</a>    </div>
+    <div class="col-md-6">
+      <a class="story_header" style="background-image: url(&#39;https://image.g-cores.com/595ff866-aafb-46ee-918a-e4d8a32fa626.jpg&#39;)" href="https://www.g-cores.com/articles/96419">
+        <div class="story_header_cover"></div>
+        <div class="story_header_imgContainer">
+          <div class="story_header_imgContainer_img">
+            <img data-no-retina="" alt="《绝地求生》和《堡垒之夜》的差别到底在哪里？" src="https://image.g-cores.com/595ff866-aafb-46ee-918a-e4d8a32fa626.jpg" />
+          </div>
+        </div>
+        <div class="story_header_cover story_header_cover-second"></div>
+        <div class="story_header_inner" >
+          <div class="story_header_text">
+            <p class="story_recommendations_head">
+              相关阅读
+            </p>
+            <h2 class="story_recommendations_title">
+              《绝地求生》和《堡垒之夜》的差别到底在哪里？
+            </h2>
+            <p class="story_recommendations_info">
+              MadMacaron
+              2018-02-17 09:06:46
+            </p>
+          </div>
+        </div>
+</a>    </div>
+</div>
+
+
+<div class="comments_backdrop">
+  <div class="container">
+    
+
+<script id="j_commentInputBox" type="text/template">
+  <div class="j_addMyComment comment_add media-block">
+    <div class="media_left">
+      <img class="img-circle" src="https://alioss.g-cores.com/default_thumb/nil_class-small.png" alt="" />
+    </div>
+    <div class="media_body">
+      <textarea rows="3" class="input j_inputComment" placeholder="请输入评论内容，可以按Ctrl+Enter提交"></textarea>
+      <div class="comment_add_actions">
+        <span class="pullRight j_comment_tip">请限制在1000字以内</span>
+        <button class="btn btn-default btn-flat btn-sm" data-loading-text="正在提交评论...">提交</button>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="tp_complaintPopbox" type="text/template">
+  <div class="popBox">
+    <div class="popBox_inner">
+      <a href="javascript:;" class="popBox_close j_pop_close">&times;</a>
+      <div class="j_pop_header popBox_title">
+        <h1>举报</h1>
+        <h2>选择举报的理由</h2>
+      </div>
+      <div class="popBox_main j_pop_main">
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios1" value="0" checked>
+            色情、暴力、血腥等违反法律法规内容
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios2" value="1">
+            挑衅、人身攻击等不友善内容
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios3" value="2">
+            垃圾信息（含广告），无意义灌水
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="optionsRadios" id="optionsRadios4" value="3">
+            涉及剧透
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="popBox_actions j_pop_actions">
+      <a href="javascript:;" class="popBox_actions_confirm j_pop_confirm">确定</a>
+    </div>
+  </div>
+</script>
+
+<script id="j_commentTp" type="text/template">
+  <li id="comment_[%= comment.id %]" class="media j_comment" data-id="[%= comment.id %]" data-depth="[%= comment.depth %]" style="[% if(comment.depth > 0 && index >= 3){ %] display:none; [% } %]">
+    <div class="media_left">
+      <a href="[%= comment.user_url %]" target="_blank">
+        <img src="[%= comment.user_thumb %]" class="img-circle">
+      </a>
+    </div>
+
+    <div class="media_body">
+      <p class="comment_name">
+        <a href="[%= comment.user_url %]" target="_blank">
+          <strong>[%- comment.user_name %]</strong>
+        </a>
+        [% if(comment.to_user_name){ %]
+          <span class="fa fa-arrow-circle-right"></span>
+          <a href="[%= comment.to_user_url %]" target="_blank">
+            <small>[%- comment.to_user_name %]</small>
+          </a>
+        [% } %]
+      </p>
+
+      <p class="comment_body">
+        [%= comment.body %]
+      </p>
+
+      <p class="comment_bottom">
+        <span>
+          [%= comment.created_at %]
+        </span>
+        <a href="javascript:;" class="j_reply">回复</a>
+        [% if(currentUserId && comment.user_id == currentUserId || isStaff ){ %]
+        <a href="javascript:;" class="j_delComment">删除</a>
+        [% } %]
+        <a href="javascript:;" class="j_like j_likeComment" data-marked="[%= comment.isLike %]">
+          <b class="fa fa-thumbs-up [%= comment.isLike ? 'active' : '' %]"></b>
+          <i>[%= comment.likes %]</i>
+        </a>
+        <a href="javascript:;" class="j_like j_dislikeComment" data-marked="[%= comment.isDislike %]">
+          <b class="fa fa-thumbs-down [%= comment.isDislike ? 'active' : '' %]"></b>
+        </a>
+        [% if(currentUserId != comment.user_id){ %]
+          <a href="javascript:;" class="j_complaint">
+            举报
+          </a>
+        [% } %]
+      </p>
+
+      [%= childrenHTML %]
+
+      <span class="j_positionPlaceholder"></span>
+    </div>
+  </li>
+  [% if(comment.depth > 0 && index == 2 && index < siblingsNum-1){ %]
+  <li>
+    <a href="javascript:;" class="j_expand comment_expand">------ 查看更多 ------</a>
+  </li>
+  [% } %]
+</script>
+
+
+<div id="j_commentsOutterContainer">
+
+  
+<div class="comments_container">
+  <div class="j_commentsContainer" style="display:none;">
+    <div class="comments_info j_commentsHeader">
+      共<span class="j_commentsNum"></span>条评论
+    </div>
+
+      <p style="margin: 20px 0;">如要评论，请先 <a href="https://www.g-cores.com/account/signin?return=https://www.g-cores.com/articles/97645">登录</a></p>
+
+    <p class="comments_sortTabs j_sortTabs">
+      <a href="javascript:;" class="j_hotTab active" data-type="hot">按热门</a>
+      <a href="javascript:;" class="j_timeTab" data-type="time">按时间</a>
+    </p>
+
+    <ul class="media-list j_rootComments j_comments comments"></ul>
+  </div>
+
+  <p class="comments_load">
+    <a href="javascript:;" class="btn btn-hollow j_getComments" data-loading-text="读取中...">查看更多评论</a>
+  </p>
+</div>
+
+</div>
+
+
+  </div>
+</div>
+
+
+
+
+
+
+
+  </div>
+
+    <a class="a_appBtmTip" href="https://www.g-cores.com/app">
+    下载 App
+</a>
+
+  <!-- <div class="footer_placeholder"></div> -->
+<footer class="footer">
+  <div class="footer_contact">
+    <a href="mailto:haolun@g-cores.com" target="_blank">CONTACT US | 联系我们</a>
+  </div>
+  <div class="footer_info">
+    <img class="footer_top" data-no-retina="" src="https://alioss.g-cores.com/assets/footer_top-4c293a683d2aece39281f2cf7e9bb022c2e55dfbd963d2862d20e3690eea91ae.jpg" alt="" />
+
+    <div class="footer_logos">
+      <a href="https://www.g-cores.com/categories/13"><img data-no-retina="" src="https://alioss.g-cores.com/assets/footer/gadio-01-e8679bfc838ae676eead7fa354c6ab7e26f3ec7bbf093c58ccaa647ae7701de4.png" alt="" /></a>
+      <a href="https://www.g-cores.com/categories/12"><img data-no-retina="" src="https://alioss.g-cores.com/assets/footer/gadiopro-01-3bbe85deb999275b31c7658a0e09299751850497bbee7e10cedb6a83ab29de75.png" alt="" /></a>
+      <a href="https://www.g-cores.com/categories/14"><img data-no-retina="" src="https://alioss.g-cores.com/assets/footer/music-01-a744efa6c6fbba4474e9f2a4b4de64347065eddc7e9ebccc375a7de2e9829f74.png" alt="" /></a>
+      <a href="https://www.g-cores.com/categories/15"><img data-no-retina="" src="https://alioss.g-cores.com/assets/footer/docu-01-8640c29ee16770157814443d1dbd01ccd5b3cf007b249db6fc6523b295662d2a.png" alt="" /></a>
+      <a href="https://www.g-cores.com/categories/16"><img data-no-retina="" src="https://alioss.g-cores.com/assets/footer/special-01-69dcd46be43114fa958e1d969bc14297e12b193dd753fb924e07e0beff25dd37.png" alt="" /></a>
+    </div>
+
+    <div class="footer_follow">
+      <h4>Follow us</h4>
+      <p>
+        <a href="http://weibo.com/gamecore" target="_blank" class="footer_weibo"></a>
+        <a href="javascript:;" class="footer_weixin" data-toggle="tooltip" data-placement="top" title="微信号：gamecores，欢迎订阅"></a>
+        <a href="http://shop124260606.taobao.com" target="_blank" class="footer_taobao"></a>
+        <a href="http://itunes.apple.com/cn/podcast/id420660752" target="_blank" class="footer_podcast"></a>
+        <a href="https://www.g-cores.com/rss" target="_blank" class="footer_rss"></a>
+      </p>
+    </div>
+
+    <p>
+      All Rights Reserved 2009-2015 GAMECORES - Terms & Conditions
+      闽ICP备11023385号-1
+    </p>
+  </div>
+</footer>
+
+
+  <a href="javascript:;" class="toTop" id="j_toTop" style="display:none;">
+  <img src="https://alioss.g-cores.com/assets/totop-4489de3bdf698735aae759e5da990bc8ecb48fd5852e674fc5ba4fcdddfd3471.png" alt="" />
+</a>
+
+
+
+  <!-- Javascripts -->
+  <script src="https://alioss.g-cores.com/assets/application-485ef6fa9ec7f3e00f2851ef19f2dd674225c986a917f0536b7e94a257c7087d.js"></script>
+  <div> <script>
+  if(typeof console == 'undefined'){
+    console = {}
+    console.log = function(){
+
+    }
+  }
+  console.log && (console.format = function(desc, data){
+    console.log(desc);
+    console.log(data);
+    console.log('---');
+  })
+</script>
+
+<script>
+	(function(){
+		var canonicalURL, curProtocol;
+		//Get the <link> tag
+		var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+		//Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+	    //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+    	!function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+</script>
+
+
+
+<script src="https://alioss.g-cores.com/assets/specific/articles/show-df92ccc79392aaa27a6d1a40906b2b1dd260acad10df9fff8d010a8a9274806e.js"></script>
+  <script>
+    $(function(){
+      new StoryShow({
+        container: $('#j_story_20408')
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    $(function(){
+      var btn = $('#j_shareToWeibo')
+      btn.on('click', function(){
+        var title = encodeURIComponent("御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图 （分享自 @机核网）");
+    		var url = encodeURIComponent('https://www.g-cores.com/articles/97645');
+    		var des = encodeURIComponent('你看天上有个人在飞');
+        var pic = encodeURIComponent('https://alioss.g-cores.com/uploads/article/ef78430a-27e9-4325-8a43-8ee12b51971a_hl.jpg');
+    		var href = 'http://service.weibo.com/share/share.php?url='+url+'&title='+title+'&pic='+pic+'&appkey=261231460&searchPic=true';
+    		window.open(href);
+        return false;
+      })
+    })
+
+    /* share to weixin */
+    $(function(){
+      var url = 'https://www.g-cores.com' + location.pathname;
+      var qrImgUrl = "https://www.g-cores.com/qrcode?url=" + encodeURIComponent(url);
+      var qrImg = $('<img>').attr('src', qrImgUrl);
+      $('#j_shareToWXBtn').popover({
+        html: true,
+        trigger: 'click', // focus not work for safari
+        content: '<img src="'+qrImgUrl+'" width="150" height="150">'
+      });
+
+      if (window.wx && window.wxMana) {
+        wx.ready(function(){
+          wx.onMenuShareTimeline({
+            title: '御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图', // 分享标题
+            link: 'https://www.g-cores.com/articles/97645', // 分享链接
+            imgUrl: 'https://alioss.g-cores.com/uploads/article/ef78430a-27e9-4325-8a43-8ee12b51971a_hl.jpg' // 分享图标
+          });
+          wx.onMenuShareAppMessage({
+            title: '御“箭”飞行：在《堡垒之夜》中用制导火箭横穿地图', // 分享标题
+            desc: '你看天上有个人在飞', // 分享描述
+            link: 'https://www.g-cores.com/articles/97645', // 分享链接
+            imgUrl: 'https://alioss.g-cores.com/uploads/article/ef78430a-27e9-4325-8a43-8ee12b51971a_hl.jpg' // 分享图标
+          });
+        });
+      }
+    });
+
+    $(function(){
+      var isSignedin = false;
+
+      $.fn.extend({
+        requestIneract: function(options){
+          var btn = $(this);
+          // options.notSignedTip
+          // options.interactUrl
+          // options.uninteractUrl
+          // options.interactMethod
+          // options.uninteractMethod
+
+          btn.click(function(){
+            if(btn.isRequesting) return;
+            if(!isSignedin){
+              alert(options.notSignedTip);
+              return false;
+            }
+
+            btn.isRequesting = true;
+
+            var isInteracted = btn.hasClass('active');
+
+            if(isInteracted){
+              var url = options.uninteractUrl;
+              var method = options.uninteractMethod;
+              var success = options.uninteractSuccess;
+            } else {
+              var url = options.interactUrl;
+              var method = options.interactMethod;
+              var success = options.interactSuccess;
+            }
+
+            $.ajax({
+              url: url,
+              type: 'post',
+              data: {
+                method: method,
+                id: 97645,
+                resource: 'Article'
+              },
+              success: function (data) {
+                btn.isRequesting = false;
+
+                if (data && data.status == -1) {
+                  alert(data.message)
+                } else {
+                  if(isInteracted){
+                    btn.removeClass('active');
+                  } else {
+                    btn.addClass('active');
+                  }
+                  success && success();
+                }
+              }
+            });
+          });
+        }
+      });
+
+      var likeBtn = $('#j_original_like');
+      var likes = $('#j_original_likesNum')
+      likeBtn.requestIneract({
+        uninteractUrl: '/like',
+        interactUrl: '/like',
+
+        uninteractMethod: 'cancel_like',
+        interactMethod: 'like',
+
+        notSignedTip: '登录即可赞一下，谢谢支持',
+
+        uninteractSuccess: function(){
+          likes.html(Number(likes.html())-1);
+
+          // temp for ugc2016
+          if(likeBtn.is('.p_voteBtn')){
+            likeBtn.html('投票');
+          }
+        },
+        interactSuccess: function(){
+          likes.html(Number(likes.html())+1);
+
+          // temp for ugc2016
+          if(likeBtn.is('.p_voteBtn')){
+            likeBtn.html('已投票');
+          }
+        }
+      });
+
+      var markBtn = $('#j_original_mark');
+      markBtn.requestIneract({
+        uninteractUrl: 'https://www.g-cores.com/mark',
+        interactUrl: 'https://www.g-cores.com/mark',
+
+        uninteractMethod: 'cancel_mark',
+        interactMethod: 'mark',
+
+        notSignedTip: '登录即可收藏本文，谢谢支持'
+      });
+    });
+  </script>
+  <script>
+    $(function(){
+      var hasFocusComment = false;
+      var focusCommentId = -1;
+      var showCommentUrl = '';
+
+      var c = new Comment({
+        isSignined: false,
+        commentable: 'article',
+        commentableId: '97645',
+        container: $('#j_commentsOutterContainer'),
+
+        currentUserId: undefined,
+        isStaff: false
+      });
+      
+      if(hasFocusComment){
+        $.ajax({
+          method: 'GET',
+          url: showCommentUrl,
+          success: function(data){
+            var comment = $(c.renderComments([data.partial]))
+            $('.j_focusComments').append(comment);
+
+            var commentIdStr = '#'+'comment_'+focusCommentId;
+            location.href = location.href.replace(/#.*$/g, '') + commentIdStr;
+
+            comment.find('li').show();
+            comment.find('.j_expand').closest('li').remove();
+
+            $(commentIdStr).addClass('highlight');
+          }
+        });
+
+        c.dom.btnGetComments.click(function(){
+          $('.j_focusCommentContainer').remove();
+        });
+      } else {
+        c.dom.btnGetComments.click();
+      }
+    });
+  </script>
+  <script>
+    (function(){
+      $.ajax({
+        url: '/originals/hit',
+        beforeSend: function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+        type: 'post',
+        data: {
+          id: 97645,
+          app: 0
+        },
+        success: function(resp){
+          // console.log('update hits')
+        }
+      });
+    })();
+  </script>
+  <script>
+    $(function(){
+      var sthide;
+      var stshow;
+      var delay = 300;
+
+      $('.navbar .dropdown').mouseenter(function(){
+        if(isCollapsed()) return;
+        clearTimeout(sthide);
+        clearTimeout(stshow);
+
+        var self = this;
+        stshow = setTimeout(function(){
+          if($(self).hasClass('open')) return;
+          itemToggle($(self));
+        }, delay);
+      });
+      $('.navbar .dropdown').mouseleave(function(){
+        if(isCollapsed()) return;
+        clearTimeout(sthide);
+        clearTimeout(stshow);
+
+        var self = this;
+        sthide = setTimeout(function(){
+          if(!$(self).hasClass('open')) return;
+          itemToggle($(self));
+        }, delay);
+      });
+
+      function isCollapsed(){
+        return $('.navbar_toggle').is(':visible')
+      }
+
+      function itemToggle(item){
+        item.find('[data-toggle="dropdown"]').dropdown('toggle');
+      }
+    });
+  </script>
+  <script>
+    $(function(){
+      var strTooltip = '.footer [data-toggle="tooltip"]'
+      $(strTooltip).tooltip({
+        delay: { "hide": 5000 }
+      }).on('show.bs.tooltip', function () {
+        $(strTooltip).not(this).tooltip('hide');
+      });
+    });
+  </script>
+  <script>
+    $(function(){
+      var totop = $('#j_toTop');
+      var point = 600;
+      totop.click(function(){
+        $('body, html').stop(true, true).animate({
+          scrollTop: 0
+        }, 800, 'easeInOutQuint');
+        return false;
+      });
+
+      $(window).scroll(function(){
+        var st = $(window).scrollTop();
+        if(st>point && totop.is(':hidden')){
+          totop.fadeIn();
+        } else if(st<=point && totop.is(':visible')){
+          totop.fadeOut();
+        }
+      });
+    });
+  </script>
+
+
+ </div>
+</body>
+
+</html>

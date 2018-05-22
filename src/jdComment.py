@@ -76,8 +76,8 @@ class commentSearch:
 
                 length = len(stars)
                 for j in range(length):
-                    f.write("$s" % goodid)
-                    f.write("%s" % name)
+                    f.write("%s " % goodid)
+                    f.write("%s\n" % name.replace('\n', ''))
                     f.write("%s\n" % levels[j])
                     f.write("%s\n" % stars[j].replace('comment-star ', ''))
                     f.write("%s\n" % comments[j].replace('\n', ''))

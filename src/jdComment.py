@@ -64,6 +64,7 @@ class commentSearch:
                 string = threadname + ':the ' + str(i+1) + 'th page comment'
                 print(string)
 
+                goodid = driver.current_url.split('/')[-1].split('.html')[0]
                 sxpath = idpath + '//div[@class="comment-column J-comment-column"]/div[1]'
                 cxpath = idpath + '//p[@class="comment-con"]'
                 lxpath = idpath + '//div[@class="user-level"]/span'
@@ -75,6 +76,7 @@ class commentSearch:
 
                 length = len(stars)
                 for j in range(length):
+                    f.write("$s" % goodid)
                     f.write("%s" % name)
                     f.write("%s\n" % levels[j])
                     f.write("%s\n" % stars[j].replace('comment-star ', ''))

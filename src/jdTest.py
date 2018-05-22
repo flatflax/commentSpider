@@ -36,16 +36,22 @@ def getComment(comment):
     thread2.start()
 
 if __name__ == "__main__":
-    nowTime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    nowTime = datetime.datetime.now()
     comment = dataPath + r'\data\jdComment_'+str(nowTime) + '.txt'
-    str = input("Input 1 to get goods link from 'jdUrl.txt',then get good comments\n"
-                "Input 2 to get goods comment from 'jdGood.txt'")
+    str = input("%s\nInput 1 to get goods link from 'jdUrl.txt',then get good comments\n"
+                "Input 2 to get goods comment from 'jdGood.txt'\n" % nowTime)
     if str == '1':
         getLink()
         print("Get good links over")
         print("Continue to get good comments?")
+        nowTime2 = datetime.datetime.now()
+        print("Use Time:", nowTime2-nowTime)
         getComment(comment)
         print("Get good comments over")
+        nowTime2 = datetime.datetime.now()#.strftime('%Y%m%d%H%M%S')
+        print("Use Time:", nowTime2-nowTime)
     elif str == '2':
         getComment(comment)
         print("Get good comments over")
+        nowTime2 = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        print("Use Time:", nowTime2-nowTime)

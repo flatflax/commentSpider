@@ -1,3 +1,4 @@
+# coding=utf-8
 import unittest
 from selenium import webdriver
 import time
@@ -6,7 +7,8 @@ from xml.dom.minidom import Document
 from selenium.webdriver.common.keys import Keys
 import os
 
-dataPath = os.path.abspath('..')    # 工程根目录
+dataPath = os.path.abspath('..')
+# 工程根目录
 file = dataPath + r'\data\jdGood.txt'
 urlfile = dataPath + r'\data\jdUrl.txt'
 
@@ -20,6 +22,10 @@ class ShopGoodSearch():
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
     def test_search_in_python_org(self, url):
+        # flag:True 从京东搜索获取商品，
+        # 写入文件时需要对商品所在店铺名进行判断
+        # flag:False 从商店"所有商品"页获取商品信息
+        # 对获取的所有商品名和商品连接可以直接写入
         driver = self.driver
         with open(file, 'a', encoding='utf-8') as f:
             doc = Document()
@@ -29,21 +35,40 @@ class ShopGoodSearch():
             time.sleep(3)
             driver.get(url)
 
-            for i in range(20):
+            flag = False
+
+            if ("list.jd.com" in url)or("search.jd.com" in url):
+                flag = True
+                xpath1 = './/div[@class="gl-i-wrap"]/div[4]/a'
+                nextpage = './/a[@class="pn-next"]'
+                shop = './/div[@class="gl-i-wrap"]/div[7]/span/a'
+            else:
                 xpath1 = './/div[@class="jGoodsInfo"]/div[1]/a'
                 # having './div[jGoodsInfo]/div[jDesc]' and './div[jGoodsInfo]/user_tj_title'
-                xpath2 = './/div[@class="jDesc"]/a'
-                goodNames = [n.text for n in driver.find_elements_by_xpath(xpath1)]
-                goodLinks = [l.get_attribute("href") for l in driver.find_elements_by_xpath(xpath1)]
+                nextpage = './/a[@class="current"]/following-sibling::a[1]'
 
-                length = len(goodNames)
+            for i in range(20):
+                goodnames = [n.text for n in driver.find_elements_by_xpath(xpath1)]
+                goodlinks = [l.get_attribute("href") for l in driver.find_elements_by_xpath(xpath1)]
+
+                if flag:
+                    shopname = [s.text for s in driver.find_elements_by_xpath(shop)]
+
+                length = len(goodnames)
                 for w in range(length):
-                    f.write('%s\n' % goodNames[w])
-                    f.write('%s\n' % goodLinks[w])
+                    if flag:
+                        try:
+                            if "官方旗舰店" in shopname[w]:
+                                f.write('%s\n' % goodnames[w])
+                                f.write('%s\n' % goodlinks[w])
+                        except Exception as e:
+                            print(e)
+                    else:
+                        f.write('%s\n' % goodnames[w])
+                        f.write('%s\n' % goodlinks[w])
 
                 try:
-                    goodXpath = './/div[@class="jPage"]/a[@class="current"]/following-sibling::a[1]'
-                    elem = driver.find_element_by_xpath(goodXpath)
+                    elem = driver.find_element_by_xpath(nextpage)
                     print('the next page:', elem.text)
                     time.sleep(3)
                     elem.click()
@@ -54,11 +79,11 @@ class ShopGoodSearch():
                     print(str1)
                     break
                 finally:
-                    goodNames.clear()
-                    goodLinks.clear()
+                    goodnames.clear()
+                    goodlinks.clear()
+                    if flag:
+                        shopname.clear()
                     time.sleep(10)
-
-            #f.write(doc.toprettyxml(indent="", encoding='utf-8'))
             print("file write over")
             f.close()
         assert "No results found." not in driver.page_source

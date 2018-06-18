@@ -1,0 +1,16 @@
+# unique
+CREATE CONSTRAINT ON (p:Product)
+ASSERT p.id IS UNIQUE
+
+# load comment
+LOAD CSV FROM "file:///comment_csv_name" AS line
+MATCH (p:Product{id:line.product_id})
+CREATE (c:Comment{score:line.score,creationTime:line.creationTime,userLevelName:line.userLevelName,content:line.content})-[:CommentFrom]->(p)
+
+
+# load reclike
+LOAD CSV FROM "file:///comment_csv_name" AS line
+MATCH (p:Product{id:line.origin_id})
+CREATE (p:Product{id:product_id,name:product_name,price:product_price}-[:GuessYouLike]->(p)
+
+#如何避免重复数据？

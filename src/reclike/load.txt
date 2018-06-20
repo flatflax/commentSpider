@@ -1,16 +1,40 @@
-# unique
-CREATE CONSTRAINT ON (p:Product)
-ASSERT p.id IS UNIQUE
+//create good nodes and relationship between [good,shop]
+LOAD CSV WITH HEADERS FROM "file:///goodOfShop.csv" AS line
+MERGE (s:Shop{id:line.shop_id}) 
+MERGE (p:Product{id:line.product_id})
+SET p.name=line.product_name,p.price=line.product_price
+MERGE (p)-[:SellFrom]->(s)
 
-# load comment
-LOAD CSV FROM "file:///comment_csv_name" AS line
-MATCH (p:Product{id:line.product_id})
-CREATE (c:Comment{score:line.score,creationTime:line.creationTime,userLevelName:line.userLevelName,content:line.content})-[:CommentFrom]->(p)
+//create comment nodes and relationship between [good,comment]
+LOAD CSV WITH HEADERS FROM "file:///5463278_comment_c_test.csv" AS line
+MERGE (p:Product{id:line.product_id})
+MERGE (c:Comment{id:line.id})
+SET c.score=line.score,c.creationTime=line.creationTime,c.userLevelName=line.userLevelName,c.content=line.content
+MERGE (c)-[:CommentFrom]->(p)
 
-
-# load reclike
-LOAD CSV FROM "file:///comment_csv_name" AS line
+//old
+LOAD CSV WITH HEADERS FROM "file:///5463278_reclike_c_test.csv" AS line
 MATCH (p:Product{id:line.origin_id})
-CREATE (p:Product{id:product_id,name:product_name,price:product_price}-[:GuessYouLike]->(p)
+CREATE UNIQUE (p1:Product{id:line.product_id,price:line.product_price,name:line.product_name})-[:Reclike]->(p)
 
-#如何避免重复数据？
+//create reclike nodes and relationship between [good,reclike_good]
+LOAD CSV WITH HEADERS FROM "file:///5463278_reclike_c_test.csv" AS line
+MERGE (p1:Product{id:line.product_id})
+SET p1.price=line.product_price,p1.name=line.product_name
+MERGE (p:Product{id:line.origin_id})
+MERGE (p1)-[:Reclike]->(p)
+return p1,p
+
+//old
+LOAD CSV WITH HEADERS FROM "file:///5463278_reclike_c_test.csv" AS line
+MATCH  (c:Category{id:line.c3}),(p:Product{id:line.product_id})
+CREATE (p)-[:BelongTo]->(c)
+
+//create relationship between category and reclike good
+LOAD CSV WITH HEADERS FROM "file:///5463278_reclike_c_test.csv" AS line
+MERGE (c:Category{id:line.c3})
+MERGE (p:Product{id:line.product_id})
+MERGE (p)-[:BelongTo]->(c)
+
+CREATE CONSTRAINT ON (p:Product) 
+ASSERT p.id IS UNIQUE 

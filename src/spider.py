@@ -14,10 +14,12 @@ logging.disable(logging.DEBUG)
 
 sheetDict = {}
 
+
 class Zhaopin(object):
     """
         智联招聘
     """
+
     def __init__(self, city, position, salaryStr):
         """
             初始化
@@ -28,7 +30,7 @@ class Zhaopin(object):
         self.city = city
         self.position = position
         self.salaryStr = salaryStr
-        self.maximizeNumEachPage = 90       # 智联招聘每页最多记录数
+        self.maximizeNumEachPage = 90  # 智联招聘每页最多记录数
 
         self.data = [['序号', '职位名称', '工资', '公司名称', '地址', '职位链接', "职位描述"]]  # sheet中的数据
 
@@ -49,7 +51,9 @@ class Zhaopin(object):
             "_v=0.86553337&at=e8850f1e524647c28be27506ebc0b3ca&"
             "rt=eb641870cc024a338a5b8d93c54e8c0c&userCode=714182244&"
             "userCode=714182244&"
-            "x-zp-page-request-id=cf8777a1a8cc4465845c9ed60bf6f753-1546575056319-557700").format(self.city, self.salaryStr, self.position)
+            "x-zp-page-request-id=cf8777a1a8cc4465845c9ed60bf6f753-1546575056319-557700").format(self.city,
+                                                                                                 self.salaryStr,
+                                                                                                 self.position)
 
         logging.info("url:{}".format(self.search_url))
 
@@ -59,12 +63,12 @@ class Zhaopin(object):
             :param text: 职位描述
             :return: 格式处理后对职位描述
         """
-        jobDesc = re.sub(r"([；;。]*)(\d[.、])",  r'\1\n\2', text)          # 处理条例
-        jobDesc = re.sub(r"[：:]", r"：\n", jobDesc)                    # 处理条例类别
-        jobDesc = re.sub(r"。(\D{4,10}[:：])", r"。\n\1", jobDesc)      # 处理中间的分类，分类前加回车
-        jobDesc = re.sub(r"\n{3,}", '\n', jobDesc)                   # 3个及3个以上回车 替换成 两个回车
-        jobDesc = re.sub(r"\n展开\n*", '', jobDesc)                     # 去掉末尾的'展开'二字
-        jobDesc = re.sub(r"^\n*职位描述\n*", "", jobDesc)                # 去掉开头对"职位描述"及前后空格
+        jobDesc = re.sub(r"([；;。]*)(\d[.、])", r'\1\n\2', text)  # 处理条例
+        jobDesc = re.sub(r"[：:]", r"：\n", jobDesc)  # 处理条例类别
+        jobDesc = re.sub(r"。(\D{4,10}[:：])", r"。\n\1", jobDesc)  # 处理中间的分类，分类前加回车
+        jobDesc = re.sub(r"\n{3,}", '\n', jobDesc)  # 3个及3个以上回车 替换成 两个回车
+        jobDesc = re.sub(r"\n展开\n*", '', jobDesc)  # 去掉末尾的'展开'二字
+        jobDesc = re.sub(r"^\n*职位描述\n*", "", jobDesc)  # 去掉开头对"职位描述"及前后空格
         return jobDesc
 
     def getJobDesc(self, url):
@@ -79,11 +83,10 @@ class Zhaopin(object):
             soup = BeautifulSoup(r.text, 'html.parser')
             jobDesc = soup.find('div', {"class:", "responsibility pos-common"})
             jobDesc = jobDesc.get_text()
-            jobDesc = self.formatProcess(jobDesc)        # 得到格式处理后的职位描述
+            jobDesc = self.formatProcess(jobDesc)  # 得到格式处理后的职位描述
             return jobDesc
         except Exception as e:
             print(e)
-
 
     def processPageData(self, start, end):
         """
@@ -94,16 +97,17 @@ class Zhaopin(object):
         """
         for i in range(start, end):
             position_name = self.search_result_json['data']['results'][i]['jobName']
-            self.count += 1     # 处理的记录数
+            self.count += 1  # 处理的记录数
 
             if self.position in position_name:
-                self.effective += 1     # 有效的记录数
+                self.effective += 1  # 有效的记录数
                 company_name = self.search_result_json['data']['results'][i]['company']['name']
                 salary = self.search_result_json['data']['results'][i]['salary']
                 city = self.search_result_json['data']['results'][i]['city']['display']
-                url = self.search_result_json['data']['results'][i]['positionURL']      # 职位url
-                jobDesc = self.getJobDesc(url)                                          # 职位描述
-                self.data.append([self.effective, position_name, salary, company_name, city, url, jobDesc])     # 找到一个符合条件的就添加到数据列表
+                url = self.search_result_json['data']['results'][i]['positionURL']  # 职位url
+                jobDesc = self.getJobDesc(url)  # 职位描述
+                self.data.append(
+                    [self.effective, position_name, salary, company_name, city, url, jobDesc])  # 找到一个符合条件的就添加到数据列表
 
                 # print("第{}/{}个职位的名称为:{},薪资为:{},公司为:{},地址为:{}".format(self.effective,
                 #     self.count, position_name,salary, company_name, city))
@@ -114,10 +118,10 @@ class Zhaopin(object):
             :return: 搜索结果的json、当前页的记录数
         """
         try:
-            search_result = requests.get(url)                                   # 职位搜索结果
+            search_result = requests.get(url)  # 职位搜索结果
             search_result.raise_for_status()
-            search_result_json = search_result.json()                           # 职位搜索结果的json：字典格式
-            currentPageRecords = len(search_result_json['data']['results'])     # 当前页的记录数：列表长度
+            search_result_json = search_result.json()  # 职位搜索结果的json：字典格式
+            currentPageRecords = len(search_result_json['data']['results'])  # 当前页的记录数：列表长度
             return search_result_json, currentPageRecords
         except Exception as e:
             print(e)
@@ -128,26 +132,26 @@ class Zhaopin(object):
             职位搜索
             :return: 爬取的职位信息形成的列表,如[[记录1各字段形成的列表], [], []...]
         """
-        self.search_result_json, self.currentPageRecords = self.searchRequests(self.search_url)     # 进行搜索请求
-        self.numbers = self.search_result_json['data']['numFound']                      # 搜索到的职位数量
-        self.count = 0                                                                  # 已处理记录数量
-        self.effective = 0                                                              # 已处理的有效记录数（职位名称中包含提供的信息）
-        self.pageNums = self.numbers / self.maximizeNumEachPage                         # 全部记录的分页数
-        self.modNums = self.numbers % self.maximizeNumEachPage                          # 最后一页的记录数量
-        self.currentPageRecords = len(self.search_result_json['data']['results'])       # 当前页的记录数量
+        self.search_result_json, self.currentPageRecords = self.searchRequests(self.search_url)  # 进行搜索请求
+        self.numbers = self.search_result_json['data']['numFound']  # 搜索到的职位数量
+        self.count = 0  # 已处理记录数量
+        self.effective = 0  # 已处理的有效记录数（职位名称中包含提供的信息）
+        self.pageNums = self.numbers / self.maximizeNumEachPage  # 全部记录的分页数
+        self.modNums = self.numbers % self.maximizeNumEachPage  # 最后一页的记录数量
+        self.currentPageRecords = len(self.search_result_json['data']['results'])  # 当前页的记录数量
         logging.info("总共搜索到{}条记录，分为{}页, 最后还剩下{}条记录（取模）.".format(self.numbers, self.pageNums, self.modNums))
         print("一共搜索到{}条职位".format(self.numbers))
 
         # 根据页数循环处理搜索到的职位记录
         for i in range(math.ceil(self.pageNums)):
             if self.currentPageRecords > 0:
-                self.processPageData(0, self.currentPageRecords)        # 处理当前页数据
+                self.processPageData(0, self.currentPageRecords)  # 处理当前页数据
             else:
                 print("当前页没有职位，网站限制最多获取12页。")
                 break
-            logging.info("当前已处理{}页，共获取了{}条记录，符合条件的有{}条".format(i+1, self.count, self.effective))
+            logging.info("当前已处理{}页，共获取了{}条记录，符合条件的有{}条".format(i + 1, self.count, self.effective))
             if self.count < self.numbers:
-                next_url = self.search_url + '&start={}'.format(90*(i+1))       # 相当于点击"下一页"按钮的请求url
+                next_url = self.search_url + '&start={}'.format(90 * (i + 1))  # 相当于点击"下一页"按钮的请求url
                 self.search_result_json, self.currentPageRecords = self.searchRequests(next_url)
             else:
                 print("所有职位已处理完成！")
@@ -200,8 +204,8 @@ class Liepin(object):
             :param soup:职位源码文本生成的bs对象
         """
         try:
-            text = soup.select("div.job-main")[0].get_text()   # 提取包含工资元素的大元素,并获取大元素中的text文本
-            salary = re.search(r"\d+-\d+万", text).group()       # 利用正则表达式提取工资
+            text = soup.select("div.job-main")[0].get_text()  # 提取包含工资元素的大元素,并获取大元素中的text文本
+            salary = re.search(r"\d+-\d+万", text).group()  # 利用正则表达式提取工资
             return salary
         except:
             return None
@@ -214,8 +218,8 @@ class Liepin(object):
         """
         try:
             pattern = re.compile(r"var \$CONFIG")
-            scriptTxt = soup.find("script", type="text/javascript", text=pattern).get_text()        # 获取职位信息的script脚本中的文本
-            pointText = re.search(str_p, scriptTxt).group(2)       # 要提取的目标文本，如公司名称、地址等。
+            scriptTxt = soup.find("script", type="text/javascript", text=pattern).get_text()  # 获取职位信息的script脚本中的文本
+            pointText = re.search(str_p, scriptTxt).group(2)  # 要提取的目标文本，如公司名称、地址等。
             # logging.info("提取的目标属性值为：{}".format(pointText))
             return pointText
         except:
@@ -225,36 +229,41 @@ class Liepin(object):
         """
         处理公司信息，获取公司名称，公司地址（data-point, data-address）
         """
-        logging.info("开始处理第{}个公司".format(self.count+1))
+        logging.info("开始处理第{}个公司".format(self.count + 1))
         positionText = self.searchRequests(companyUrl)  # 公司url请求，获取返回的text网页数据
         soup = BeautifulSoup(positionText, "html.parser")
         jobCount = soup.select("h2.job-title small")[0].text
         jobCount = int(re.search(r'[0-9]+', jobCount).group(0))
-        if jobCount >0:
+        if jobCount > 0:
             # 该公司招聘职位 > 0, 爬取公司信息
             companyInfo = soup.select("ul.new-compintro")[0]  # 公司信息
-            companyName = companyInfo.get_attribute_list()
             pass
-
 
     def processPosition(self, positionUrl):
         """
             处理每一个职位信息，把每一个职位信息写入data列表中。调用formatProcess进行格式化
         """
-        logging.info("开始处理第{}个职位".format(self.count+1))
-        positionText = self.searchRequests(positionUrl)      # 职位url请求，获取返回的text网页数据
-        positionId = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/([0-9]*)',positionUrl ).group(1)   # 获取职位id
+        logging.info("开始处理第{}个职位".format(self.count + 1))
+        positionText = self.searchRequests(positionUrl)  # 职位url请求，获取返回的text网页数据
+        positionId = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/([0-9]*)', positionUrl).group(1)  # 获取职位id
 
         soup = BeautifulSoup(positionText, "html.parser")
-        positionTitle = soup.find("h1").get_text()     # 职位标题
+        positionTitle = soup.find("h1").get_text()  # 职位标题
         positionDistrict = soup.select("p.basic-infor span a")[0].text
         self.count += 1
         self.effective += 1
 
         # 获取职位信息，获取公司信息
+        salary = soup.select("div.job-title-left p")[0].text
+        minSalary, maxSalary, bonusSalary = '', '', ''
+        if salary != '' or '面议' not in salary:
+            minSalary = re.match(r'(\d*)\w?-?(\d*)\w?\S?(\d*\S?)', salary).group(1) + 'k'
+            maxSalary = re.match(r'(\d*)\w?-?(\d*)\w?\S?(\d*\S?)', salary).group(2) + 'k'
+            bonusSalary = re.match(r'(\d*)\w?-?(\d*)\w?\S?(\d*\S?)', salary).group(3)
+
         companyInfo = soup.select("div.smallmap")[0]
-        companyName = companyInfo.find("input", attrs={"id":"company-name"})['value']
-        companyDistrict = companyInfo.find("input", attrs={"id":"com-dq"})['value']
+        companyName = companyInfo.find("input", attrs={"id": "company-name"})['value']
+        companyDistrict = companyInfo.find("input", attrs={"id": "com-dq"})['value']
         companyAddress = companyInfo.find("input", attrs={"id": "company-address"})['value']
         companyLocation = companyInfo.find("input", attrs={"id": "location"})['value']
 
@@ -266,20 +275,27 @@ class Liepin(object):
         with conn:
             _id = str(tools.get_cache_time())
             cursor = conn.cursor()
-            cursor.execute("INSERT OR IGNORE INTO employer_job"
-            "(_id, companyName, companyId, companyDistrict, companyAddress, companyLocation, website, positionTitle, positionId, positionDistrict) "
-            "values (?,?,?,?,?,?,?,?,?,?);",
-            [_id, companyName, companyId, positionDistrict, companyAddress, companyLocation, 'liebao', positionTitle, positionId, positionDistrict])
+            cursor.execute("INSERT OR IGNORE INTO job_info"
+                           "(positionId, positionTitle, positionDistrict, minPositionSalary, "
+                           "maxPositionSalary, bonusPositionSalary, companyName, companyId, "
+                           "companyDistrict, companyAddress, companyLocation, website) "
+                           "values (?,?,?,?,?,?,?,?,?,?,?,?);",
+                           [positionId, positionTitle, positionDistrict, minSalary, maxSalary, bonusSalary, companyName,
+                            companyId, companyDistrict, companyAddress, companyLocation, '猎聘'])
 
         logging.info(
-            "序号：{} 职位名称:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle, companyName, companyId, positionDistrict, companyAddress, companyLocation))
+            "序号：{} 职位名称:{} 薪资:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle, salary,
+                                                                               companyName,
+                                                                               companyId, positionDistrict,
+                                                                               companyAddress,
+                                                                               companyLocation))
 
     def processPageData(self, pageData):
         """
             处理每一页的数据：在当前页循环调用processPosition进行处理
             :pageData: 网页text
         """
-        logging.info("开始处理第{}页的招聘数据......".format(self.page+1))
+        logging.info("开始处理第{}页的招聘数据......".format(self.page + 1))
         soup = BeautifulSoup(pageData, 'html.parser')
         # positionElems = soup.select('ul.sojob-list li div div.job-info h3[title] a[target="_blank"]')   # 查找所有的职位<a>元素:查找当前页的所有招聘记录
         positionElems = soup.select('div.job-info h3[title] a')
@@ -290,7 +306,7 @@ class Liepin(object):
         for i in positionElems:
             positionUrl = i.attrs['href']
             logging.info("职位url:{}".format(positionUrl))
-            flag = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/[0-9]*', positionUrl)
+            flag = re.match(r'^\w*://[a-z.]*/\w*/\d*', positionUrl)
             if flag is not None:
                 self.processPosition(positionUrl)
             else:
@@ -326,7 +342,7 @@ class Liepin(object):
         soup = BeautifulSoup(text, "html.parser")
         # with open("text.html", "w") as f:               # 记录页面text，用来排查错误
         #     f.write(text)
-        nextPageElem = soup.find("a", text="下一页")        # 查找class为disabled的<a>元素，即下一页按钮禁用时
+        nextPageElem = soup.find("a", text="下一页")  # 查找class为disabled的<a>元素，即下一页按钮禁用时
         if "class" in nextPageElem.attrs.keys():
             print("已是最后一页。")
             return False, None
@@ -342,15 +358,15 @@ class Liepin(object):
            职位搜索:搜索每一个search_url, 对返回结果进行逐条处理，然后请求下一页再处理页面数据，直到没有下一页。调用processPageData处理每一页数据
            :return: 爬取的职位信息形成的列表,如[[记录1各字段形成的列表], [], []...]
         """
-        self.page = 0               # 已处理的页数
-        self.count = 0              # 已处理的记录数
-        self.effective = 0          # 已处理的有效的记录数:提供的关键字在记录标题中存在时则有效
+        self.page = 0  # 已处理的页数
+        self.count = 0  # 已处理的记录数
+        self.effective = 0  # 已处理的有效的记录数:提供的关键字在记录标题中存在时则有效
         logging.info("开始职位搜索......")
 
-        self.search_result_text = self.searchRequests(self.search_url)      # 职位搜索请求返回的text
+        self.search_result_text = self.searchRequests(self.search_url)  # 职位搜索请求返回的text
         logging.debug("搜索到的页面text：{}".format(self.search_result_text))
 
-        self.processPageData(self.search_result_text)       # 处理搜索到的页面数据
+        self.processPageData(self.search_result_text)  # 处理搜索到的页面数据
 
         # 如果有下一页，则继续搜索下一页、处理搜索的数据，直到末页。
         ok, url = self.hasNextPage(self.search_result_text)
@@ -377,7 +393,7 @@ def salaryRangeProcess(salaryRange, salaryDict):
         salary = ['']
     else:
         try:
-            salaryRange = salaryRange.split()       # 根据空格，拆分成列表
+            salaryRange = salaryRange.split()  # 根据空格，拆分成列表
             # 循环，判断选择是否正确，不正确则按照不指定月薪进行查询, 正确则返回月薪范围列表
             for i in salaryRange:
                 if i not in ['1', '2', '3']:
@@ -390,6 +406,7 @@ def salaryRangeProcess(salaryRange, salaryDict):
             print(e)
 
     return salary
+
 
 def crawling(className, sheetName, city, position, i):
     """
@@ -415,9 +432,8 @@ def main():
     threads = []
 
     database = Database()
-    conn = database.get_connect()
-    database.create_company_job_table(conn)
-    del database
+    database.create_table('job_info')
+    database.create_table('company_info')
 
     # 信息输入
     # city = input("请输入城市(如北京)：")
@@ -457,11 +473,9 @@ def main():
     for i in threads:
         i.join()
 
-    # logging.info("所有线程均已返回，开始写入excel......")
+    logging.info("所有线程均已返回，开始写入excel......")
     # pyexcel.save_book_as(bookdict=sheetDict, dest_file_name=filename)
-    database = Database()
-    conn = database.get_connect()
-    database.export_database_customer_msg(conn)
+    database.export_database_data('job_info')
 
 
 if __name__ == "__main__":

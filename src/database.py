@@ -7,44 +7,41 @@ from src import settings, tools
 
 
 class Database():
+    def __init__(self):
+        self.database_path = settings.database_path
+
     def get_connect(self):
-        conn = sqlite3.connect('employer_database.db')
+        conn = sqlite3.connect(self.database_path)
         return conn
 
-    def create_company_job_table(self, connect):
+    def create_table(self, table_name):
+        connect = sqlite3.connect(self.database_path)
         cur = connect.cursor()
-        cur.execute("select count(*) from sqlite_master where type='table' and name='employer_job'")
+        cur.execute("select count(*) from sqlite_master where type='table' and name='{}'".format(table_name))
         value = cur.fetchall()
         if value[0][0] != 1:
-            cur.execute("create table employer_job (" +
-                        "_id varchar(30) PRIMARY KEY," +
-                        "companyName varchar(30), " +  # 公司名
-                        "companyId varchar(30), " +  # 公司id(招聘网站页)
-                        "companyDistrict varchar(30), " +  # 公司地区
-                        "companyAddress varchar(100)," +  # 公司地址
-                        "companyLocation varchar(30)," +  # 公司经纬度
-                        "website varchar(10)," +  # 平台
-                        "positionTitle varchar(50)," + # 职位名称
-                        "positionId varchar(50)," +  # 职位id
-                        "positionDistrict varchar(50)" +  # 职位地区
-                        ")")
-            logging.info("table employer_job create")
+            create_sql = self.get_create_sql(table_name)
+            cur.execute(create_sql)
+            logging.info("table {} create".format(table_name))
         else:
-            logging.info("table employer_job exist")
+            logging.info("table {} exist".format(table_name))
         connect.commit()
         connect.close()
 
-    def export_database_customer_msg(self, conn):
+    def export_database_data(self, table_name):
+        select_sql, name_list = self.get_select_sql(table_name)
+        conn = sqlite3.connect(self.database_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM employer_job")
+        cursor.execute(select_sql)
         names = list(map(lambda x: x[0], cursor.description))
         result = cursor.fetchall()
 
-        file_path = settings.database_export_msg_xlsx.format(date=tools.get_today())
+        file_path = settings.export_company_file.format(date=tools.get_today())
         if len(result) > 0:
             if not os.path.exists(file_path):
                 wb = Workbook()
                 ws = wb.active
+                ws.append(name_list)
                 ws.append(names)
             else:
                 wb = load_workbook(file_path)
@@ -55,6 +52,66 @@ class Database():
                 ws.append(r)
             wb.save(file_path)
 
+    def get_select_sql(self, table_name):
+        sql, name_list = "", tuple([])
+        if table_name == 'job_info':
+            sql = "SELECT DISTINCT companyName,companyId,companyDistrict,companyAddress,companyLocation FROM job_info"
+            name_list = tuple(['公司名称', '公司Id', '公司地区', '地址', '经纬度'])
+        if table_name == 'company_info':
+            sql = ""
+            name_list = tuple([])
+        return sql, name_list
+
+    def get_create_sql(self, table_name):
+        sql = ''
+        if table_name == 'job_info':
+            '''
+             positionId  职位id
+             positionTitle 职位名称
+             positionDistrict 职位地区
+             minPositionSalary 薪资最小值
+             maxPositionSalary 薪资最大值
+             companyName 公司名
+             companyId 公司id(招聘网站页)
+             companyDistrict 公司地区
+             companyAddress 公司地址
+             companyLocation 公司经纬度
+             website 平台
+            '''
+            sql = "create table job_info (" \
+                        "positionId varchar(50) PRIMARY KEY," \
+                        "positionTitle varchar(50)," \
+                        "positionDistrict varchar(50)," \
+                        "minPositionSalary varchar(5)," \
+                        "maxPositionSalary varchar(5)," \
+                        "bonusPositionSalary varchar(3)," \
+                        "companyName varchar(30), " \
+                        "companyId varchar(30), " \
+                        "companyDistrict varchar(30), " \
+                        "companyAddress varchar(100)," \
+                        "companyLocation varchar(30)," \
+                        "website varchar(10)" \
+                        ")"
+        if table_name == 'company_info':
+            '''
+            companyId  公司id
+            companyName 公司名
+            companyDistrict 公司地区
+            companyAddress 公司地址
+            companyLocation 公司经纬度
+            companyHireNum 公司招聘职位数
+            website 平台
+            '''
+            sql = "create table company_info (" \
+                        "companyId varchar(30) PRIMARY KEY," \
+                        "companyName varchar(30), " \
+                        "companyDistrict varchar(30), " \
+                        "companyAddress varchar(100)," \
+                        "companyLocation varchar(30)," \
+                        "companyHireNum int(5)," + \
+                        "website varchar(10)" \
+                        ")"
+        return sql
 
 class PoolException(Exception):
     pass

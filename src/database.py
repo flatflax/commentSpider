@@ -7,9 +7,13 @@ from src import settings, tools
 
 
 class Database():
+    def get_connect(self):
+        conn = sqlite3.connect('employer_database.db')
+        return conn
+
     def create_company_job_table(self, connect):
         cur = connect.cursor()
-        cur.execute("select count(*) from sqlite_master where type='table' and name='company_job'")
+        cur.execute("select count(*) from sqlite_master where type='table' and name='employer_job'")
         value = cur.fetchall()
         if value[0][0] != 1:
             cur.execute("create table employer_job (" +
@@ -24,15 +28,15 @@ class Database():
                         "positionId varchar(50)," +  # 职位id
                         "positionDistrict varchar(50)" +  # 职位地区
                         ")")
-            logging.info("table company_job create")
+            logging.info("table employer_job create")
         else:
-            logging.info("table company_job exist")
+            logging.info("table employer_job exist")
         connect.commit()
         connect.close()
 
     def export_database_customer_msg(self, conn):
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM company_job")
+        cursor.execute("SELECT * FROM employer_job")
         names = list(map(lambda x: x[0], cursor.description))
         result = cursor.fetchall()
 
@@ -160,11 +164,11 @@ class SQLit3PoolConnection(PoolingConnection):
 
 dbcs = {"SQLite3": SQLit3PoolConnection}
 
-pool = Pool(database="employer_database.db")
-
-
-def test():
-    conn = pool.get()
-    with conn:
-        for a in conn.execute("SELECT * FROM A"):
-            print(a)
+# pool = Pool(database="employer_database.db")
+#
+#
+# def test():
+#     conn = pool.get()
+#     with conn:
+#         for a in conn.execute("SELECT * FROM A"):
+#             print(a)

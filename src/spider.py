@@ -4,13 +4,13 @@ import requests, logging, re, math, pyexcel
 from bs4 import BeautifulSoup
 import threading
 
-from src import settings
+from src import tools
 from src.database import Pool, Database
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s-%(levelname)s-%(message)s")
 logging.disable(logging.DEBUG)
 
-pool = Pool(database="employer_database.db")
+# pool = Pool(database="employer_database.db")
 
 sheetDict = {}
 
@@ -170,6 +170,7 @@ class Liepin(object):
         self.salaryStr = salaryStr
 
         # self.data = [['序号', '职位名称', '工资', '公司名称', '地址', '职位链接', "职位描述"]]  # sheet中的数据
+        self.data = [['序号', '职位名称', '职位id', '职位地区', '公司名称', '公司Id', '公司地区', '地址', 'location']]
 
         self.search_url = ("https://www.liepin.com/zhaopin/?"
                            "industries=&"
@@ -247,13 +248,11 @@ class Liepin(object):
         soup = BeautifulSoup(positionText, "html.parser")
         positionTitle = soup.find("h1").get_text()     # 职位标题
         positionDistrict = soup.select("p.basic-infor span a")[0].text
-        # logging.info("该职位标题为：{}".format(positionTitle))
         self.count += 1
         self.effective += 1
 
         # 获取职位信息，获取公司信息
         companyInfo = soup.select("div.smallmap")[0]
-        # companyInfo = soup.find("div", class_="company-logo").find("p").find("a")
         companyName = companyInfo.find("input", attrs={"id":"company-name"})['value']
         companyDistrict = companyInfo.find("input", attrs={"id":"com-dq"})['value']
         companyAddress = companyInfo.find("input", attrs={"id": "company-address"})['value']
@@ -261,7 +260,16 @@ class Liepin(object):
 
         companyUrl = soup.select("div.company-logo a")[0]['href']
         companyId = re.search(r'[0-9]+', companyUrl).group(0)
-        self.data.append([self.effective, positionTitle, positionId, positionDistrict, companyName, companyId, companyDistrict, companyAddress, companyLocation])
+
+        database = Database()
+        conn = database.get_connect()
+        with conn:
+            _id = str(tools.get_cache_time())
+            cursor = conn.cursor()
+            cursor.execute("INSERT OR IGNORE INTO employer_job"
+            "(_id, companyName, companyId, companyDistrict, companyAddress, companyLocation, website, positionTitle, positionId, positionDistrict) "
+            "values (?,?,?,?,?,?,?,?,?,?);",
+            [_id, companyName, companyId, positionDistrict, companyAddress, companyLocation, 'liebao', positionTitle, positionId, positionDistrict])
 
         logging.info(
             "序号：{} 职位名称:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle, companyName, companyId, positionDistrict, companyAddress, companyLocation))
@@ -406,16 +414,16 @@ def main():
     filename = "招聘信息搜集.xlsx"
     threads = []
 
-    conn = pool.get()
-    with conn:
-        database = Database()
-        database.create_company_job_table(conn)
+    database = Database()
+    conn = database.get_connect()
+    database.create_company_job_table(conn)
+    del database
 
     # 信息输入
-    city = input("请输入城市(如北京)：")
-    position = input("请输入职位（如测试）：")
-    # city = '广州'
-    # position = '测试'
+    # city = input("请输入城市(如北京)：")
+    # position = input("请输入职位（如测试）：")
+    city = '广州'
+    position = '测试'
 
     # # 智联招聘
     # getZL = input("是否获取智联招聘上的信息Y/N:")
@@ -449,8 +457,11 @@ def main():
     for i in threads:
         i.join()
 
-    logging.info("所有线程均已返回，开始写入excel......")
-    pyexcel.save_book_as(bookdict=sheetDict, dest_file_name=filename)
+    # logging.info("所有线程均已返回，开始写入excel......")
+    # pyexcel.save_book_as(bookdict=sheetDict, dest_file_name=filename)
+    database = Database()
+    conn = database.get_connect()
+    database.export_database_customer_msg(conn)
 
 
 if __name__ == "__main__":

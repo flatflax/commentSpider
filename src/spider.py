@@ -1,9 +1,16 @@
+# coding=utf-8
+
 import requests, logging, re, math, pyexcel
 from bs4 import BeautifulSoup
 import threading
 
+from src import settings
+from src.database import Pool, Database
+
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s-%(levelname)s-%(message)s")
 logging.disable(logging.DEBUG)
+
+pool = Pool(database="employer_database.db")
 
 sheetDict = {}
 
@@ -157,12 +164,12 @@ class Liepin(object):
             :param position: 测试职位，如测试
             :param salaryStr: 年薪，如20$30表示年薪20万至30万
         """
-        self.cityIdDict = {'北京': '010', '西安': '270020', '成都': '280020', '深圳': '050090', '重庆': '040'}
+        self.cityIdDict = {'北京': '010', '西安': '270020', '成都': '280020', '深圳': '050090', '重庆': '040', '广州': '050020'}
         self.city = city
         self.position = position
         self.salaryStr = salaryStr
 
-        self.data = [['序号', '职位名称', '工资', '公司名称', '地址', '职位链接', "职位描述"]]  # sheet中的数据
+        # self.data = [['序号', '职位名称', '工资', '公司名称', '地址', '职位链接', "职位描述"]]  # sheet中的数据
 
         self.search_url = ("https://www.liepin.com/zhaopin/?"
                            "industries=&"
@@ -235,43 +242,29 @@ class Liepin(object):
         """
         logging.info("开始处理第{}个职位".format(self.count+1))
         positionText = self.searchRequests(positionUrl)      # 职位url请求，获取返回的text网页数据
+        positionId = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/([0-9]*)',positionUrl ).group(1)   # 获取职位id
+
         soup = BeautifulSoup(positionText, "html.parser")
         positionTitle = soup.find("h1").get_text()     # 职位标题
-        logging.info("该职位标题为：{}".format(positionTitle))
+        positionDistrict = soup.select("p.basic-infor span a")[0].text
+        # logging.info("该职位标题为：{}".format(positionTitle))
         self.count += 1
+        self.effective += 1
 
-        # 如果职位标题里含有用户提供的关键字，则获取其他数据，并放入data列表中
-        if self.position in positionTitle:
-            logging.info("该职位为有效职位")
-            self.effective += 1
-            logging.info(("有效职位/已处理职位：{}/{}".format(self.effective, self.count)))
+        # 获取职位信息，获取公司信息
+        companyInfo = soup.select("div.smallmap")[0]
+        # companyInfo = soup.find("div", class_="company-logo").find("p").find("a")
+        companyName = companyInfo.find("input", attrs={"id":"company-name"})['value']
+        companyDistrict = companyInfo.find("input", attrs={"id":"com-dq"})['value']
+        companyAddress = companyInfo.find("input", attrs={"id": "company-address"})['value']
+        companyLocation = companyInfo.find("input", attrs={"id": "location"})['value']
 
-            # 工资
-            # salary = self.extractSalary(soup) or "提取工资失败"
-            salary = self.extractInfo(soup, '\"(salary)\":\s*\"(\d+\.*\d*\$\d+\.*\d*)\"') or "提取工资失败"
-            if salary != "提取工资失败":
-                salary = re.sub('\$', '-', salary)
-                salary = salary + '万'
+        companyUrl = soup.select("div.company-logo a")[0]['href']
+        companyId = re.search(r'[0-9]+', companyUrl).group(0)
+        self.data.append([self.effective, positionTitle, positionId, positionDistrict, companyName, companyId, companyDistrict, companyAddress, companyLocation])
 
-            # 公司、地址
-            company = self.extractInfo(soup, '\"(company|name)\":\s*\"(\w*)\",') or "提取公司名称失败"
-            address = self.extractInfo(soup, '\"(dqName|city)\":\s*\"(\D*)\",') or "提取地址失败"
-
-            # 职位描述
-            try:
-                description = soup.find("div", class_="content content-word")
-                if not description:
-                    description = soup.find("div", class_="job-info-content")
-                description = description.get_text().strip()
-            except:
-                description = "提取职位信息失败"
-
-            # 添加excel数据项
-            self.data.append([self.effective, positionTitle, salary, company, address, positionUrl, description])
-            logging.info("序号：{} 职位名称:{} 工资:{} 公司名称:{} 地址:{}".format(self.effective, positionTitle, salary, company, address))
-
-        else:
-            logging.info("该职位标题不包含提供的关键字，为无效职位。")
+        logging.info(
+            "序号：{} 职位名称:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle, companyName, companyId, positionDistrict, companyAddress, companyLocation))
 
     def processPageData(self, pageData):
         """
@@ -289,7 +282,12 @@ class Liepin(object):
         for i in positionElems:
             positionUrl = i.attrs['href']
             logging.info("职位url:{}".format(positionUrl))
-            self.processPosition(positionUrl)
+            flag = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/[0-9]*', positionUrl)
+            if flag is not None:
+                self.processPosition(positionUrl)
+            else:
+                logging.info("猎头招聘 职位url invalid")
+                continue
 
         # 循环处理每个公司
         # for i in companyElems:
@@ -408,11 +406,16 @@ def main():
     filename = "招聘信息搜集.xlsx"
     threads = []
 
+    conn = pool.get()
+    with conn:
+        database = Database()
+        database.create_company_job_table(conn)
+
     # 信息输入
-    # city = input("请输入城市(如北京)：")
-    # position = input("请输入职位（如测试）：")
-    city = '北京'
-    position = '测试'
+    city = input("请输入城市(如北京)：")
+    position = input("请输入职位（如测试）：")
+    # city = '广州'
+    # position = '测试'
 
     # # 智联招聘
     # getZL = input("是否获取智联招聘上的信息Y/N:")
@@ -429,9 +432,10 @@ def main():
     # 猎聘
     getLP = input("是否获取猎聘网上的信息Y/N：")
     if getLP.upper() == "Y":
-        salaryLPDict = {"1": "10$15", "2": "15$20", "3": "20$30"}       # 猎聘薪资范围
-        salaryLPRange = input("请进行年薪范围选择（1：10-15万 2：15-20万 3：20-30万，选择多项时以空格分隔）：")
-        salaryLP = salaryRangeProcess(salaryLPRange, salaryLPDict)      # 选择的年薪，格式如["10$15", "15$20"]
+        # salaryLPDict = {"1": "10$15", "2": "15$20", "3": "20$30"}       # 猎聘薪资范围
+        # salaryLPRange = input("请进行年薪范围选择（1：10-15万 2：15-20万 3：20-30万，选择多项时以空格分隔）：")
+        # salaryLP = salaryRangeProcess(salaryLPRange, salaryLPDict)      # 选择的年薪，格式如["10$15", "15$20"]
+        salaryLP = ['']
         logging.info("选择的年薪为：{}".format(salaryLP))
         for i in salaryLP:
             sheetName = "猎聘网_{}_{}_{}".format(city, position, i)

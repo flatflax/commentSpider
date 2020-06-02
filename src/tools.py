@@ -12,3 +12,6 @@ def get_cache_time():
 
 def get_today():
     return time.strftime("%Y%m%d")
+
+def get_liebao_traceid():
+    return str(int(time.time() * 100000))[-11:]

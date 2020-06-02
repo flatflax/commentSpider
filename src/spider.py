@@ -174,6 +174,7 @@ class Liepin(object):
         self.city = city
         self.position = position
         self.salaryStr = salaryStr
+        self.threadName = "猎聘_{}_{}".format(self.position, self.city)
 
         # self.data = [['序号', '职位名称', '工资', '公司名称', '地址', '职位链接', "职位描述"]]  # sheet中的数据
         self.data = [['序号', '职位名称', '职位id', '职位地区', '公司名称', '公司Id', '公司地区', '地址', 'location']]
@@ -238,14 +239,14 @@ class Liepin(object):
         conn = database.get_connect()
         with conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT count(DISTINCT companyId) from company_info where companyId={}".format(companyId))
+            cursor.execute("SELECT count(1) from company_info where companyId={}".format(companyId))
             value = cursor.fetchall()
             if value[0][0] == 1:
                 logging.info("该公司在数据库中存在，跳过")
                 return 0
         del database
 
-        logging.info("开始处理第{}个公司: {}".format(self.companyCount + 1, companyId))
+        logging.info("thread:{} 开始处理第{}个公司: {}".format(self.threadName, self.companyCount + 1, companyId))
         positionText = self.searchRequests(companyUrl)  # 公司url请求，获取返回的text网页数据
         soup = BeautifulSoup(positionText, "html.parser")
         jobCount = soup.select("h2.job-title small")[0].text
@@ -268,7 +269,7 @@ class Liepin(object):
             companyName = companyInfo['data-name']
             companyCity = companyInfo['data-city']
             companyLocation = companyInfo['data-point']
-            logging.info("公司名:{}, 总页数:{}, 总职位数:{}".format(companyName, jobTotalPage, jobCount))
+            logging.info("thread:{} 公司名:{}, 总页数:{}, 总职位数:{}".format(self.threadName, companyName, jobTotalPage, jobCount))
 
             database = Database()
             conn = database.get_connect()
@@ -307,13 +308,13 @@ class Liepin(object):
         conn = database.get_connect()
         with conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT count(DISTINCT positionId) from job_info where positionId={}".format(positionId))
+            cursor.execute("SELECT count(1) from job_info where positionId={}".format(positionId))
             value = cursor.fetchall()
             if value[0][0] == 1:
                 return 0
         del database
 
-        logging.info("开始处理第{}个职位".format(self.positionCount + 1))
+        logging.info("thread:{} 开始处理第{}个职位".format(self.threadName, self.positionCount + 1))
         positionText = self.searchRequests(positionUrl)  # 职位url请求，获取返回的text网页数据
 
         soup = BeautifulSoup(positionText, "html.parser")
@@ -351,25 +352,25 @@ class Liepin(object):
                            [positionId, positionTitle, positionDistrict, minSalary, maxSalary, bonusSalary, companyName,
                             companyId, companyDistrict, companyAddress, companyLocation, '猎聘'])
 
-        logging.info(
-            "序号：{} 职位名称:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle,
-                                                                               companyName,
-                                                                               companyId, positionDistrict,
-                                                                               companyAddress,
-                                                                               companyLocation))
+        # logging.info(
+        #     "序号：{} 职位名称:{} 公司名称:{} Id:{} 地区:{} 地址:{} location:{}".format(self.effective, positionTitle,
+        #                                                                        companyName,
+        #                                                                        companyId, positionDistrict,
+        #                                                                        companyAddress,
+        #                                                                        companyLocation))
 
     def processPageData(self, pageData):
         """
             处理每一页的数据：在当前页循环调用processPosition进行处理
             :pageData: 网页text
         """
-        logging.info("开始处理第{}页的招聘数据......".format(self.page + 1))
+        logging.info("thread:{} 开始处理第{}页的招聘数据......".format(self.threadName, self.page + 1))
         soup = BeautifulSoup(pageData, 'html.parser')
         # positionElems = soup.select('ul.sojob-list li div div.job-info h3[title] a[target="_blank"]')   # 查找所有的职位<a>元素:查找当前页的所有招聘记录
         # positionElems = soup.select('div.job-info h3[title] a')
         companyElems = soup.select('div.company-info p.company-name a')
         # logging.debug("当前页找到{}条招聘数据:{}".format(len(positionElems), positionElems))
-        logging.info("当前页找到{}条招聘公司:{}".format(len(companyElems), companyElems))
+        logging.info("thread:{} 当前页找到{}条招聘公司:{}".format(self.threadName, len(companyElems), companyElems))
 
         # # 循环处理每个职位
         # for i in positionElems:
@@ -427,8 +428,8 @@ class Liepin(object):
         else:
             nextPageUrl = nextPageElem.attrs['href']
             nextPageUrl = "https://www.liepin.com" + nextPageUrl
-            logging.info("[下一页]元素为{}：".format(nextPageElem))
-            logging.info("[下一页]元素的url：{}".format(nextPageUrl))
+            logging.info("thread:{} [下一页]元素为{}：".format(self.threadName, nextPageElem))
+            logging.info("thread:{} [下一页]元素的url：{}".format(self.threadName, nextPageUrl))
             return True, nextPageUrl
 
     def processItem(self):
@@ -441,11 +442,11 @@ class Liepin(object):
             item = self.workQueue.get()
             try:
                 if item['type'] == 'position':
-                    logging.info("从队列获得职位item")
+                    logging.info("thread:{} 从队列获得职位item".format(self.threadName))
                     self.processPosition(item['url'])
                     continue
                 if item['type'] == 'company':
-                    logging.info('从队列获得公司item')
+                    logging.info('thread:{} 从队列获得公司item'.format(self.threadName))
                     self.processCompany(item['url'])
                     continue
                 if item['type'] == 'search':
@@ -466,10 +467,10 @@ class Liepin(object):
         self.positionCount = 0  # 已处理的记录数
         self.effective = 0  # 已处理的有效的记录数:提供的关键字在记录标题中存在时则有效
         self.searchEndFlag = False  # 搜索页面已到达最后一页
-        logging.info("开始职位搜索......")
+        logging.info("thread:{} 开始职位搜索......".format(self.threadName))
 
         self.search_result_text = self.searchRequests(self.search_url)  # 职位搜索请求返回的text
-        logging.debug("搜索到的页面text：{}".format(self.search_result_text))
+        logging.debug("{} 搜索到的页面text：{}".format(self.threadName, self.search_result_text))
 
         self.processPageData(self.search_result_text)  # 处理搜索到的页面数据
         self.processItem()
@@ -484,7 +485,7 @@ class Liepin(object):
             ok, url = self.hasNextPage(self.search_result_text)
         self.searchEndFlag = True
 
-        logging.info("搜索到的职位有：{}".format(self.data))
+        logging.info("thread:{} 搜索到的职位有：{}".format(self.threadName, self.data))
         return self.data
 
 
@@ -547,7 +548,7 @@ def main():
     # city = input("请输入城市(如北京)：")
     # position = input("请输入职位（如测试）：")
     city = '广州'
-    position = '测试'
+    position = ['制药','外贸','电商','美容','政府']
 
     # # 智联招聘
     # getZL = input("是否获取智联招聘上的信息Y/N:")
@@ -570,9 +571,11 @@ def main():
         salaryLP = ['']
         logging.info("选择的年薪为：{}".format(salaryLP))
         for i in salaryLP:
-            sheetName = "猎聘网_{}_{}_{}".format(city, position, i)
-            t = threading.Thread(target=crawling, args=[Liepin, sheetName, city, position, i])
-            threads.append(t)
+            for p in position:
+                sheetName = "猎聘网_{}_{}_{}".format(city, position, i)
+                logging.info(sheetName)
+                t = threading.Thread(target=crawling, args=[Liepin, sheetName, city, p, i])
+                threads.append(t)
 
     # 启动多线程
     for i in threads:

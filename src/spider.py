@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import threading
 from queue import Queue
 
-from src import tools
+from src import tools, account_info
 from src.database import Database
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s-%(levelname)s-%(message)s")
@@ -47,14 +47,7 @@ class Zhaopin(object):
             "companyType=-1&"
             "employmentType=-1&"
             "jobWelfareTag=-1&"
-            "kw={}&"
-            "kt=3&=10001&"
-            "_v=0.86553337&at=e8850f1e524647c28be27506ebc0b3ca&"
-            "rt=eb641870cc024a338a5b8d93c54e8c0c&userCode=714182244&"
-            "userCode=714182244&"
-            "x-zp-page-request-id=cf8777a1a8cc4465845c9ed60bf6f753-1546575056319-557700").format(self.city,
-                                                                                                 self.salaryStr,
-                                                                                                 self.position)
+            "kw={}&{}").format(self.city, self.salaryStr, self.position, account_info.account_info_zhilian)
 
         logging.info("url:{}".format(self.search_url))
 
@@ -186,10 +179,7 @@ class Liepin(object):
                            "key={}&"
                            "jobKind=&pubTime=&compkind=&compscale=&industryType=&"
                            "searchType=1&clean_condition=&isAnalysis=&init=1&sortFlag=15&"
-                           "flushckid=0&fromSearchBtn=1&headckid=f986fbf749f051f9&"
-                           "d_headId=cca981d65db407df31a0b8b2c10351e6&d_ckId=0640801dfdef30cd312352a8a0635b43&"
-                           "d_sfrom=search_prime&d_curPage=0&d_pageSize=40&"
-                           "siTag=2wbHjR4kz3CKFM6BybYX7A~qsUyzhklenhJ18GQAASSnQ"
+                           "flushckid=0&fromSearchBtn=1&{}"
                            ).format(self.cityIdDict[self.city], self.salaryStr, self.position)
         logging.info("url:{}".format(self.search_url))
 
@@ -258,7 +248,7 @@ class Liepin(object):
             如果该公司招聘职位 > 0，爬取公司信息，爬取各招聘url
             """
             pageCount = 15  # 每页职位计数
-            maxPage = 20    # 每个公司最大爬取职位数
+            maxPage = 20  # 每个公司最大爬取职位数
 
             jobTotalPage = int(int(jobCount) / pageCount)
             jobTotalPage = jobTotalPage if jobTotalPage < maxPage else maxPage
@@ -269,21 +259,22 @@ class Liepin(object):
             companyName = companyInfo['data-name']
             companyCity = companyInfo['data-city']
             companyLocation = companyInfo['data-point']
-            logging.info("thread:{} 公司名:{}, 总页数:{}, 总职位数:{}".format(self.threadName, companyName, jobTotalPage, jobCount))
+            logging.info(
+                "thread:{} 公司名:{}, 总页数:{}, 总职位数:{}".format(self.threadName, companyName, jobTotalPage, jobCount))
 
             database = Database()
             conn = database.get_connect()
             with conn:
                 cursor = conn.cursor()
                 cursor.execute("INSERT or IGNORE INTO company_info"
-                                   "(companyId,companyName,companyDistrict,companyAddress,"
-                                   "companyLocation,companyHireNum,website)"
-                                   "values(?,?,?,?,?,?,?)",
-                                   [companyId, companyName, companyCity, companyAddress, companyLocation, jobCount, "猎聘"])
+                               "(companyId,companyName,companyDistrict,companyAddress,"
+                               "companyLocation,companyHireNum,website)"
+                               "values(?,?,?,?,?,?,?)",
+                               [companyId, companyName, companyCity, companyAddress, companyLocation, jobCount, "猎聘"])
 
-            while(nowPage < jobTotalPage):
+            while (nowPage < jobTotalPage):
                 self.processPositionFromCompanyPage(companyUrl, nowPage)
-                nowPage  = nowPage + 1
+                nowPage = nowPage + 1
 
     def processPositionFromCompanyPage(self, companyUrl, nowPage):
         requestUrl = companyUrl + "pn" + str(nowPage)
@@ -293,7 +284,7 @@ class Liepin(object):
         # logging.info("当前页为{}, 找到{}个职位信息".format(nowPage, len(positionItems)))
         for item in positionItems:
             positionUrl = item.find('a')['href']
-            positionUrl = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/[0-9]*[a-z.]*',positionUrl).group(0)
+            positionUrl = re.match(r'^[a-z]*://[a-z.]*/[a-z]*/[0-9]*[a-z.]*', positionUrl).group(0)
             new_item = {"type": "position", "url": positionUrl}
             self.workQueue.put(new_item)
 
@@ -386,7 +377,7 @@ class Liepin(object):
         # 循环处理每个公司
         for i in companyElems:
             if 'href' in i.attrs:
-                companyUrl = i.attrs['href']       # 获取职位的链接
+                companyUrl = i.attrs['href']  # 获取职位的链接
             else:
                 # 猎头信息，跳过
                 continue
@@ -394,7 +385,7 @@ class Liepin(object):
             # logging.info("公司url:{}".format(companyUrl))
             flag = re.match(r'^\w*://[a-z.]*/\w*/\d*', companyUrl)
             if flag is not None:
-                new_item = {"type":"company", "url": companyUrl}
+                new_item = {"type": "company", "url": companyUrl}
                 self.workQueue.put(new_item)
             # self.processCompany(companyUrl)   # 处理单个职位
 
@@ -423,7 +414,8 @@ class Liepin(object):
         #     f.write(text)
         nextPageElem = soup.find("a", text="下一页")  # 查找class为disabled的<a>元素，即下一页按钮禁用时
         if "class" in nextPageElem.attrs.keys():
-            print("已是最后一页。")
+            logging.info(
+                "thread:{} 已是最后一页。 共爬取公司{}个，职位{}个".format(self.threadName, self.companyCount, self.positionCount))
             return False, None
         else:
             nextPageUrl = nextPageElem.attrs['href']
@@ -517,7 +509,7 @@ def salaryRangeProcess(salaryRange, salaryDict):
     return salary
 
 
-def crawling(className, sheetName, city, position, i):
+def crawling(className, city, position, i):
     """
         爬取各招聘网站的数据
         :param className: 类名如Zhaopin、Liepin
@@ -526,41 +518,32 @@ def crawling(className, sheetName, city, position, i):
         :param position: 职位如测试
         :param i: 薪资选择如20$30 或15001,25000
     """
-    global sheetDict
-    sheetData = className(city, position, i).searchPosition()
-    sheetDict[sheetName] = sheetData
+    className(city, position, i).searchPosition()
 
 
-def main():
+def main(city, position):
     """
         主函数
     """
     print("**********欢迎使用招聘信息爬取软件**********")
-    global sheetDict
-    filename = "招聘信息搜集.xlsx"
     threads = []
 
     database = Database()
     database.create_table('job_info')
     database.create_table('company_info')
 
-    # 信息输入
-    # city = input("请输入城市(如北京)：")
-    # position = input("请输入职位（如测试）：")
-    city = '广州'
-    position = ['制药','外贸','电商','美容','政府']
-
-    # # 智联招聘
-    # getZL = input("是否获取智联招聘上的信息Y/N:")
-    # if getZL.upper() == 'Y':
-    #     salaryDict = {"1": "8001,10000", "2": "10001,15000", "3": "15001,25000"}  # 薪资范围
-    #     salaryRange = input("请进行月薪范围选择(1:8K-10K 2:10K-15K 3:15K-25K, 选择多项时以空格分隔)：")
-    #     salary = salaryRangeProcess(salaryRange, salaryDict)        # 月薪，如["10001,15000", "15001,2000"]
-    #     logging.info("选择的月薪为：{}".format(salary))
-    #     for i in salary:
-    #         sheetName = "智联招聘_{}_{}_{}".format(city, position, i)
-    #         t = threading.Thread(target=crawling, args=[Zhaopin, sheetName, city, position, i])
-    #         threads.append(t)
+    # 智联招聘
+    getZL = input("是否获取智联招聘上的信息Y/N:")
+    if getZL.upper() == 'Y':
+        salaryDict = {"1": "8001,10000", "2": "10001,15000", "3": "15001,25000"}  # 薪资范围
+        salaryRange = input("请进行月薪范围选择(1:8K-10K 2:10K-15K 3:15K-25K, 选择多项时以空格分隔)：")
+        salary = salaryRangeProcess(salaryRange, salaryDict)        # 月薪，如["10001,15000", "15001,2000"]
+        logging.info("选择的月薪为：{}".format(salary))
+        for i in salary:
+            threadName = "智联招聘_{}_{}_{}".format(city, position, i)
+            logging.info(threadName)
+            t = threading.Thread(target=crawling, args=[Zhaopin, city, position, i])
+            threads.append(t)
 
     # 猎聘
     getLP = input("是否获取猎聘网上的信息Y/N：")
@@ -572,9 +555,9 @@ def main():
         logging.info("选择的年薪为：{}".format(salaryLP))
         for i in salaryLP:
             for p in position:
-                sheetName = "猎聘网_{}_{}_{}".format(city, position, i)
-                logging.info(sheetName)
-                t = threading.Thread(target=crawling, args=[Liepin, sheetName, city, p, i])
+                threadName = "猎聘网_{}_{}_{}".format(city, position, i)
+                logging.info(threadName)
+                t = threading.Thread(target=crawling, args=[Liepin, city, p, i])
                 threads.append(t)
 
     # 启动多线程
@@ -584,10 +567,14 @@ def main():
     for i in threads:
         i.join()
 
-    logging.info("所有线程均已返回，开始写入excel......")
-    # pyexcel.save_book_as(bookdict=sheetDict, dest_file_name=filename)
-    database.export_database_data('job_info')
+def export_database_data(table_name):
+    database = Database()
+    database.export_database_data(table_name)
 
 
 if __name__ == "__main__":
-    main()
+    city = '广州'
+    position = ['测试', '制药', '外贸', '电商', '美容', '政府'] + ['专员', '成本', 'IT', '招商', '设计', '质量', '采购', '数据', '日化', '食品']
+    main(city, position)
+    # export_database_data('job_info')
+    # export_database_data('company_info')

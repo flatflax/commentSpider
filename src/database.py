@@ -36,7 +36,7 @@ class Database():
         names = list(map(lambda x: x[0], cursor.description))
         result = cursor.fetchall()
 
-        file_path = settings.export_company_file.format(date=tools.get_today())
+        file_path = settings.export_company_file.format(date=tools.get_today(), table_name = table_name)
         if len(result) > 0:
             if not os.path.exists(file_path):
                 wb = Workbook()
@@ -55,11 +55,16 @@ class Database():
     def get_select_sql(self, table_name):
         sql, name_list = "", tuple([])
         if table_name == 'job_info':
-            sql = "SELECT DISTINCT companyName,companyId,companyDistrict,companyAddress,companyLocation FROM job_info"
-            name_list = tuple(['公司名称', '公司Id', '公司地区', '地址', '经纬度'])
+            sql = "SELECT positionId, positionTitle, positionDistrict, minPositionSalary, " \
+                  "maxPositionSalary, bonusPositionSalary, companyName,companyId,companyDistrict," \
+                  "companyAddress,companyLocation, website FROM job_info"
+            name_list = tuple(['职位id', '职位名称', '职位地区', '薪资最小值', '薪资最大值', '一年x薪',
+                               '公司名称', '公司Id', '公司地区', '地址', '经纬度', '平台'])
         if table_name == 'company_info':
-            sql = ""
-            name_list = tuple([])
+            sql = "SELECT companyId, companyName, companyDistrict, " \
+                  "companyAddress, companyLocation, companyHireNum, website " \
+                  "FROM company_info"
+            name_list = tuple(['公司id','公司名','公司地区','公司地址','公司经纬度','公司招聘职位数','平台'])
         return sql, name_list
 
     def get_create_sql(self, table_name):
@@ -71,6 +76,7 @@ class Database():
              positionDistrict 职位地区
              minPositionSalary 薪资最小值
              maxPositionSalary 薪资最大值
+             bonusPositionSalary 一年x薪
              companyName 公司名
              companyId 公司id(招聘网站页)
              companyDistrict 公司地区
@@ -79,19 +85,19 @@ class Database():
              website 平台
             '''
             sql = "create table job_info (" \
-                        "positionId varchar(50) PRIMARY KEY," \
-                        "positionTitle varchar(50)," \
-                        "positionDistrict varchar(50)," \
-                        "minPositionSalary varchar(5)," \
-                        "maxPositionSalary varchar(5)," \
-                        "bonusPositionSalary varchar(3)," \
-                        "companyName varchar(30), " \
-                        "companyId varchar(30), " \
-                        "companyDistrict varchar(30), " \
-                        "companyAddress varchar(100)," \
-                        "companyLocation varchar(30)," \
-                        "website varchar(10)" \
-                        ")"
+                  "positionId varchar(50) PRIMARY KEY," \
+                  "positionTitle varchar(50)," \
+                  "positionDistrict varchar(50)," \
+                  "minPositionSalary varchar(5)," \
+                  "maxPositionSalary varchar(5)," \
+                  "bonusPositionSalary varchar(3)," \
+                  "companyName varchar(30), " \
+                  "companyId varchar(30), " \
+                  "companyDistrict varchar(30), " \
+                  "companyAddress varchar(100)," \
+                  "companyLocation varchar(30)," \
+                  "website varchar(10)" \
+                  ")"
         if table_name == 'company_info':
             '''
             companyId  公司id
@@ -103,15 +109,16 @@ class Database():
             website 平台
             '''
             sql = "create table company_info (" \
-                        "companyId varchar(30) PRIMARY KEY," \
-                        "companyName varchar(30), " \
-                        "companyDistrict varchar(30), " \
-                        "companyAddress varchar(100)," \
-                        "companyLocation varchar(30)," \
-                        "companyHireNum int(5)," + \
-                        "website varchar(10)" \
-                        ")"
+                  "companyId varchar(30) PRIMARY KEY," \
+                  "companyName varchar(30), " \
+                  "companyDistrict varchar(30), " \
+                  "companyAddress varchar(100)," \
+                  "companyLocation varchar(30)," \
+                  "companyHireNum int(5)," + \
+                  "website varchar(10)" \
+                  ")"
         return sql
+
 
 class PoolException(Exception):
     pass
@@ -119,6 +126,7 @@ class PoolException(Exception):
 
 class Pool(object):
     """一个数据库连接池"""
+
     def __init__(self, maxActive=5, maxWait=None, init_size=0, db_type="SQLite3", **config):
         self.__freeConns = queue.Queue(maxActive)
         self.maxWait = maxWait

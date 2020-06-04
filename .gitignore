@@ -1,8 +1,8 @@
 *.csv
 *.xlsx
 /database/*.db
-/src/__pycache__/*
-/result/*
+*/src/__pycache__/*
+GcoresSpider/result/*
 .idea/.name
 .idea/commentSpider.iml
 .idea/encodings.xml
@@ -11,5 +11,5 @@
 .idea/workspace.xml
 .idea/workspace.xml
 .idea/vcs.xml
-/data/*
+*/data/*
 
